@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "source": "Supplied v0.1.0 ZIP, commit 35f70c1",
+  "fromSchema": 1,
+  "toSchema": 2,
+  "checks": [
+    "original v1 run preserved byte-for-byte at load",
+    "original approval retained",
+    "pending v1 event rebound and consumed",
+    "run completed after upgrade",
+    "zero outbound redispatch",
+    "audit chain preserved"
+  ],
+  "externalBusinessOutputs": "synthetic test fixtures only"
+}

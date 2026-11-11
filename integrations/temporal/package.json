@@ -1,0 +1,7 @@
+{
+  "name":"@qmtt/twc-temporal","version":"0.1.0","private":true,"type":"module",
+  "scripts":{"build":"tsc -p tsconfig.json","start":"node --env-file-if-exists=.env dist/worker.js"},
+  "engines":{"node":">=22.16.0"},
+  "dependencies":{"@temporalio/client":"1.13.2","@temporalio/worker":"1.13.2","@temporalio/workflow":"1.13.2"},
+  "devDependencies":{"@types/node":"24.0.4","typescript":"5.8.3"}
+}

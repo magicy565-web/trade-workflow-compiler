@@ -1,0 +1,18 @@
+{
+  "browser": "Chromium",
+  "mode": "static rendering of actual HTML/CSS via set_content",
+  "desktop": [
+    1440,
+    1000
+  ],
+  "mobile": [
+    390,
+    844
+  ],
+  "checks": {
+    "page_render": true,
+    "no_mobile_horizontal_overflow": true
+  },
+  "interactive_browser_test": "NOT VERIFIED: container browser policy returned ERR_BLOCKED_BY_ADMINISTRATOR for localhost. No bypass attempted. Native Node HTTP integration tests run separately.",
+  "screenshots_contain": "Unconfigured empty state only; no synthetic business results"
+}

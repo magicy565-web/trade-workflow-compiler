@@ -1,0 +1,17 @@
+{
+  "request": "我们主营服装面料，要开发美国中小品牌客户；邮件发送前必须人工确认。",
+  "playbook": "buyer-development",
+  "context": {
+    "companyName": "",
+    "products": [
+      "服装面料"
+    ],
+    "targetMarkets": [
+      "US"
+    ],
+    "goal": "寻找符合要求的潜在采购方，真实回复后交由销售跟进",
+    "budgetMicros": 0,
+    "currency": "USD",
+    "facts": {}
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@qmtt/trade-workflow-compiler",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Local-first, fail-closed trade workflow compiler with durable approvals and an OpenMausBot adapter",
+  "engines": {
+    "node": ">=22.16.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node scripts/test.mjs",
+    "check": "npm run typecheck && npm run build && npm test",
+    "start": "node --env-file-if-exists=.env dist/server.js",
+    "init": "node --env-file-if-exists=.env dist/cli.js init",
+    "doctor": "node --env-file-if-exists=.env dist/cli.js doctor",
+    "compile": "node --env-file-if-exists=.env dist/cli.js compile",
+    "export:schema": "node --env-file-if-exists=.env dist/cli.js schemas",
+    "publish:github": "node scripts/publish-github.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.7",
+    "typescript": "5.8.3"
+  }
+}

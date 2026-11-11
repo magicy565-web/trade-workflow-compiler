@@ -1,0 +1,498 @@
+TAP version 13
+# (node:3286) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: OpenMausBot adapter executes verified public MCP protocol over real subprocess pipes
+ok 1 - OpenMausBot adapter executes verified public MCP protocol over real subprocess pipes
+  ---
+  duration_ms: 248.362046
+  type: 'test'
+  ...
+# Subtest: OpenMausBot send_id is reused safely after a lost send acknowledgement
+ok 2 - OpenMausBot send_id is reused safely after a lost send acknowledgement
+  ---
+  duration_ms: 102.7731
+  type: 'test'
+  ...
+# Subtest: settled is not accepted as success when job state is failed
+ok 3 - settled is not accepted as success when job state is failed
+  ---
+  duration_ms: 115.076199
+  type: 'test'
+  ...
+# Subtest: settled is not accepted as success when job state is stalled
+ok 4 - settled is not accepted as success when job state is stalled
+  ---
+  duration_ms: 105.629419
+  type: 'test'
+  ...
+# Subtest: settled is not accepted as success when job state is idle
+ok 5 - settled is not accepted as success when job state is idle
+  ---
+  duration_ms: 87.023685
+  type: 'test'
+  ...
+# Subtest: MCP result for wrong request is rejected
+ok 6 - MCP result for wrong request is rejected
+  ---
+  duration_ms: 89.369872
+  type: 'test'
+  ...
+# Subtest: OpenMausBot adapter cannot run external actions
+ok 7 - OpenMausBot adapter cannot run external actions
+  ---
+  duration_ms: 0.776268
+  type: 'test'
+  ...
+# Subtest: HTTP adapter verifies live health contract, HMAC, final receipt and idempotency key
+ok 8 - HTTP adapter verifies live health contract, HMAC, final receipt and idempotency key
+  ---
+  duration_ms: 30.659428
+  type: 'test'
+  ...
+# Subtest: optional LLM selector validates grounded output without executing tools
+ok 9 - optional LLM selector validates grounded output without executing tools
+  ---
+  duration_ms: 6.241464
+  type: 'test'
+  ...
+# Subtest: LLM fabricated supporting quote is rejected
+ok 10 - LLM fabricated supporting quote is rejected
+  ---
+  duration_ms: 4.999857
+  type: 'test'
+  ...
+# (node:3287) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: HTTP health and static UI are real, not a fixture route
+ok 11 - HTTP health and static UI are real, not a fixture route
+  ---
+  duration_ms: 41.652807
+  type: 'test'
+  ...
+# Subtest: API denies anonymous access and disallowed origins
+ok 12 - API denies anonymous access and disallowed origins
+  ---
+  duration_ms: 15.067685
+  type: 'test'
+  ...
+# Subtest: role boundary rejects viewer compilation and operator approval
+ok 13 - role boundary rejects viewer compilation and operator approval
+  ---
+  duration_ms: 28.805281
+  type: 'test'
+  ...
+# Subtest: invalid request fields and invalid event contracts are rejected
+ok 14 - invalid request fields and invalid event contracts are rejected
+  ---
+  duration_ms: 25.453111
+  type: 'test'
+  ...
+# Subtest: ingest credentials cannot start runs or approve work
+ok 15 - ingest credentials cannot start runs or approve work
+  ---
+  duration_ms: 10.63472
+  type: 'test'
+  ...
+# Subtest: full API lifecycle with durable DB and authenticated event inbox
+ok 16 - full API lifecycle with durable DB and authenticated event inbox
+  ---
+  duration_ms: 87.965491
+  type: 'test'
+  ...
+# (node:3293) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: compile registered playbook: buyer-development
+ok 17 - compile registered playbook: buyer-development
+  ---
+  duration_ms: 9.462957
+  type: 'test'
+  ...
+# Subtest: compile registered playbook: inquiry-quote
+ok 18 - compile registered playbook: inquiry-quote
+  ---
+  duration_ms: 10.744495
+  type: 'test'
+  ...
+# Subtest: compile registered playbook: sample-followup
+ok 19 - compile registered playbook: sample-followup
+  ---
+  duration_ms: 8.986021
+  type: 'test'
+  ...
+# Subtest: default registry is disabled; compiling never invents tools
+ok 20 - default registry is disabled; compiling never invents tools
+  ---
+  duration_ms: 0.910839
+  type: 'test'
+  ...
+# Subtest: unknown goal is not silently converted into buyer development
+ok 21 - unknown goal is not silently converted into buyer development
+  ---
+  duration_ms: 1.153334
+  type: 'test'
+  ...
+# Subtest: missing enterprise facts are not hallucinated
+ok 22 - missing enterprise facts are not hallucinated
+  ---
+  duration_ms: 6.825062
+  type: 'test'
+  ...
+# Subtest: unsupported request fields are rejected
+ok 23 - unsupported request fields are rejected
+  ---
+  duration_ms: 6.075435
+  type: 'test'
+  ...
+# Subtest: market extraction gives hints, does not silently rewrite profile
+ok 24 - market extraction gives hints, does not silently rewrite profile
+  ---
+  duration_ms: 1.032713
+  type: 'test'
+  ...
+# Subtest: validator blocks duplicate IDs
+ok 25 - validator blocks duplicate IDs
+  ---
+  duration_ms: 2.691086
+  type: 'test'
+  ...
+# Subtest: validator blocks cycle
+ok 26 - validator blocks cycle
+  ---
+  duration_ms: 2.963245
+  type: 'test'
+  ...
+# Subtest: validator blocks dangling edge
+ok 27 - validator blocks dangling edge
+  ---
+  duration_ms: 4.58866
+  type: 'test'
+  ...
+# Subtest: validator blocks unreachable node
+ok 28 - validator blocks unreachable node
+  ---
+  duration_ms: 2.650805
+  type: 'test'
+  ...
+# Subtest: validator blocks fictional capability
+ok 29 - validator blocks fictional capability
+  ---
+  duration_ms: 2.63415
+  type: 'test'
+  ...
+# Subtest: validator blocks pinned capability version
+ok 30 - validator blocks pinned capability version
+  ---
+  duration_ms: 5.042852
+  type: 'test'
+  ...
+# Subtest: validator blocks data contract mismatch
+ok 31 - validator blocks data contract mismatch
+  ---
+  duration_ms: 3.911091
+  type: 'test'
+  ...
+# Subtest: validator blocks contract forgery
+ok 32 - validator blocks contract forgery
+  ---
+  duration_ms: 1.523871
+  type: 'test'
+  ...
+# Subtest: validator blocks approval deletion
+ok 33 - validator blocks approval deletion
+  ---
+  duration_ms: 1.749901
+  type: 'test'
+  ...
+# Subtest: validator blocks approval bypass
+ok 34 - validator blocks approval bypass
+  ---
+  duration_ms: 1.473175
+  type: 'test'
+  ...
+# Subtest: validator blocks different approved payload
+ok 35 - validator blocks different approved payload
+  ---
+  duration_ms: 1.559224
+  type: 'test'
+  ...
+# Subtest: validator blocks rejected approval path
+ok 36 - validator blocks rejected approval path
+  ---
+  duration_ms: 3.562126
+  type: 'test'
+  ...
+# Subtest: validator blocks external automatic retries
+ok 37 - validator blocks external automatic retries
+  ---
+  duration_ms: 3.564149
+  type: 'test'
+  ...
+# Subtest: validator blocks side effect disguised as research
+ok 38 - validator blocks side effect disguised as research
+  ---
+  duration_ms: 1.736551
+  type: 'test'
+  ...
+# Subtest: validator blocks cost underestimation
+ok 39 - validator blocks cost underestimation
+  ---
+  duration_ms: 1.791033
+  type: 'test'
+  ...
+# Subtest: validator blocks insufficient total budget
+ok 40 - validator blocks insufficient total budget
+  ---
+  duration_ms: 2.197004
+  type: 'test'
+  ...
+# Subtest: validator blocks missing facts cannot be published
+ok 41 - validator blocks missing facts cannot be published
+  ---
+  duration_ms: 3.158179
+  type: 'test'
+  ...
+# Subtest: validator blocks invented correlation field
+ok 42 - validator blocks invented correlation field
+  ---
+  duration_ms: 4.294487
+  type: 'test'
+  ...
+# Subtest: validator blocks unsafe timeout route
+ok 43 - validator blocks unsafe timeout route
+  ---
+  duration_ms: 4.279454
+  type: 'test'
+  ...
+# Subtest: validator blocks dynamic JS condition
+ok 44 - validator blocks dynamic JS condition
+  ---
+  duration_ms: 3.830569
+  type: 'test'
+  ...
+# Subtest: validator blocks unsafe field access
+ok 45 - validator blocks unsafe field access
+  ---
+  duration_ms: 4.141377
+  type: 'test'
+  ...
+# Subtest: JSON Schema subset fails on unsupported keywords
+ok 46 - JSON Schema subset fails on unsupported keywords
+  ---
+  duration_ms: 0.257297
+  type: 'test'
+  ...
+# Subtest: canonical hashes ignore key order but bind content
+ok 47 - canonical hashes ignore key order but bind content
+  ---
+  duration_ms: 0.21978
+  type: 'test'
+  ...
+# Subtest: prototype field traversal is forbidden
+ok 48 - prototype field traversal is forbidden
+  ---
+  duration_ms: 0.235624
+  type: 'test'
+  ...
+# Subtest: unsafe HTTP and credential-bearing URLs are blocked
+ok 49 - unsafe HTTP and credential-bearing URLs are blocked
+  ---
+  duration_ms: 0.343647
+  type: 'test'
+  ...
+# Subtest: external action cannot be bound to a general-purpose bot
+ok 50 - external action cannot be bound to a general-purpose bot
+  ---
+  duration_ms: 1.223079
+  type: 'test'
+  ...
+# Subtest: strict nested objects reject prototype pollution payloads
+ok 51 - strict nested objects reject prototype pollution payloads
+  ---
+  duration_ms: 0.246391
+  type: 'test'
+  ...
+# Subtest: binding drift requires recompile even when capability version is unchanged
+ok 52 - binding drift requires recompile even when capability version is unchanged
+  ---
+  duration_ms: 4.00426
+  type: 'test'
+  ...
+# (node:3337) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: durable complete lifecycle: buyer-development
+ok 53 - durable complete lifecycle: buyer-development
+  ---
+  duration_ms: 22.717467
+  type: 'test'
+  ...
+# Subtest: durable complete lifecycle: inquiry-quote
+ok 54 - durable complete lifecycle: inquiry-quote
+  ---
+  duration_ms: 9.08507
+  type: 'test'
+  ...
+# Subtest: durable complete lifecycle: sample-followup
+ok 55 - durable complete lifecycle: sample-followup
+  ---
+  duration_ms: 6.602958
+  type: 'test'
+  ...
+# Subtest: rejecting approval never sends
+ok 56 - rejecting approval never sends
+  ---
+  duration_ms: 8.075161
+  type: 'test'
+  ...
+# Subtest: approval content hash is mandatory
+ok 57 - approval content hash is mandatory
+  ---
+  duration_ms: 8.978419
+  type: 'test'
+  ...
+# Subtest: initiator cannot approve their own outbound operation
+ok 58 - initiator cannot approve their own outbound operation
+  ---
+  duration_ms: 5.562845
+  type: 'test'
+  ...
+# Subtest: expired approval cannot be applied
+ok 59 - expired approval cannot be applied
+  ---
+  duration_ms: 6.216416
+  type: 'test'
+  ...
+# Subtest: approval decisions are immutable and duplicate same decision is idempotent
+ok 60 - approval decisions are immutable and duplicate same decision is idempotent
+  ---
+  duration_ms: 5.34083
+  type: 'test'
+  ...
+# Subtest: start idempotency returns same run; conflict rejects
+ok 61 - start idempotency returns same run; conflict rejects
+  ---
+  duration_ms: 2.357895
+  type: 'test'
+  ...
+# Subtest: tenant isolation protects run, definition and approvals
+ok 62 - tenant isolation protects run, definition and approvals
+  ---
+  duration_ms: 6.105039
+  type: 'test'
+  ...
+# Subtest: workflow author cannot publish own version
+ok 63 - workflow author cannot publish own version
+  ---
+  duration_ms: 1.438383
+  type: 'test'
+  ...
+# Subtest: published definitions and version keys cannot be overwritten
+ok 64 - published definitions and version keys cannot be overwritten
+  ---
+  duration_ms: 1.779465
+  type: 'test'
+  ...
+# Subtest: duplicate business events are deduplicated; payload changes conflict
+ok 65 - duplicate business events are deduplicated; payload changes conflict
+  ---
+  duration_ms: 1.621859
+  type: 'test'
+  ...
+# Subtest: early event after run creation is retained until the wait node
+ok 66 - early event after run creation is retained until the wait node
+  ---
+  duration_ms: 9.158601
+  type: 'test'
+  ...
+# Subtest: events of wrong type, correlation or tenant cannot wake a run
+ok 67 - events of wrong type, correlation or tenant cannot wake a run
+  ---
+  duration_ms: 8.031786
+  type: 'test'
+  ...
+# Subtest: reply timeout terminates instead of inventing a buyer response
+ok 68 - reply timeout terminates instead of inventing a buyer response
+  ---
+  duration_ms: 7.764253
+  type: 'test'
+  ...
+# Subtest: invalid worker output stops before outreach
+ok 69 - invalid worker output stops before outreach
+  ---
+  duration_ms: 2.51379
+  type: 'test'
+  ...
+# Subtest: provider budget overrun stops further work and retains reported cost
+ok 70 - provider budget overrun stops further work and retains reported cost
+  ---
+  duration_ms: 2.109252
+  type: 'test'
+  ...
+# Subtest: safe transient research retry is bounded and reserves another attempt
+ok 71 - safe transient research retry is bounded and reserves another attempt
+  ---
+  duration_ms: 6.667715
+  type: 'test'
+  ...
+# Subtest: uncertain outbound result is never automatically resent
+ok 72 - uncertain outbound result is never automatically resent
+  ---
+  duration_ms: 21.186335
+  type: 'test'
+  ...
+# Subtest: suppression list blocks a recipient even after approval
+ok 73 - suppression list blocks a recipient even after approval
+  ---
+  duration_ms: 14.210997
+  type: 'test'
+  ...
+# Subtest: cancellation stops subsequent dispatch
+ok 74 - cancellation stops subsequent dispatch
+  ---
+  duration_ms: 2.040068
+  type: 'test'
+  ...
+# Subtest: SQLite state survives closing and reopening the store
+ok 75 - SQLite state survives closing and reopening the store
+  ---
+  duration_ms: 38.299886
+  type: 'test'
+  ...
+# Subtest: in-flight external action on crash is reconciled, never blindly replayed
+ok 76 - in-flight external action on crash is reconciled, never blindly replayed
+  ---
+  duration_ms: 8.413751
+  type: 'test'
+  ...
+# Subtest: audit modification is detected
+ok 77 - audit modification is detected
+  ---
+  duration_ms: 1.700988
+  type: 'test'
+  ...
+# Subtest: concurrent ticks cannot dispatch one step twice
+ok 78 - concurrent ticks cannot dispatch one step twice
+  ---
+  duration_ms: 28.003644
+  type: 'test'
+  ...
+# Subtest: every worker receives original company facts and business request
+ok 79 - every worker receives original company facts and business request
+  ---
+  duration_ms: 7.266676
+  type: 'test'
+  ...
+# Subtest: v1 rejects multiple outbound recipients instead of silently waiting for only the first reply
+ok 80 - v1 rejects multiple outbound recipients instead of silently waiting for only the first reply
+  ---
+  duration_ms: 5.135271
+  type: 'test'
+  ...
+1..80
+# tests 80
+# suites 0
+# pass 80
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 967.54211

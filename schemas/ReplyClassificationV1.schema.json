@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "category": {
+      "enum": [
+        "rfq",
+        "interested",
+        "declined",
+        "unsubscribe",
+        "other"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000
+    },
+    "needsHuman": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "category",
+    "reason",
+    "needsHuman"
+  ],
+  "additionalProperties": false
+}

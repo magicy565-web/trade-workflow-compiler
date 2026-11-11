@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "baselineCommit": "35f70c1",
+  "tests": {
+    "passed": 117,
+    "failed": 0,
+    "skipped": 0
+  },
+  "cleanDistribution": {
+    "passed": 117,
+    "withoutNodeModules": true
+  },
+  "originalV1Migration": "passed",
+  "httpFixtureIntegration": "passed",
+  "browserE2E": "blocked_by_environment_policy",
+  "externalBusinessIntegrationsVerified": false,
+  "githubRemoteCreated": false,
+  "temporalVerified": false,
+  "windowsVerified": false,
+  "dockerVerified": false,
+  "registryInstall": "EAI_AGAIN",
+  "generatedAt": "2026-11-11T04:23:54.322Z"
+}

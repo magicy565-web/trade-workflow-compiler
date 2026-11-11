@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+    },
+    "nextAction": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "capturedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "excerpt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "verification": {
+            "enum": [
+              "source_observed",
+              "unverified"
+            ]
+          }
+        },
+        "required": [
+          "url",
+          "capturedAt",
+          "excerpt",
+          "verification"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 50
+    }
+  },
+  "required": [
+    "outcome",
+    "nextAction",
+    "evidence"
+  ],
+  "additionalProperties": false
+}

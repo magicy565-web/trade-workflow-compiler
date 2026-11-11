@@ -1,0 +1,25 @@
+{
+  "id": "market.research",
+  "version": "1.0.0",
+  "description": "市场研究；本示例默认关闭，必须替换真实路径和bot ID并审查权限",
+  "inputContract": "EnterpriseContextV1",
+  "outputContract": "MarketBriefV1",
+  "effect": "read",
+  "enabled": false,
+  "maxCostMicros": 500000,
+  "binding": {
+    "adapter": "openmausbot",
+    "botId": "REPLACE_WITH_REAL_BOT_ID",
+    "command": "C:\\REPLACE_WITH_INSTALL_PATH\\OpenMausBot.exe",
+    "args": [
+      "C:\\REPLACE_WITH_INSTALL_PATH\\resources\\server\\mcp-server.js"
+    ],
+    "envKeys": [
+      "ELECTRON_RUN_AS_NODE",
+      "OPENMAUSBOT_URL",
+      "OPENMAUSBOT_TOKEN",
+      "OMB_PORT"
+    ],
+    "readOnlyProfileAttested": false
+  }
+}

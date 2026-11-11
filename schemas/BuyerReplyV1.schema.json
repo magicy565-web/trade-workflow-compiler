@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "from": {
+      "type": "string",
+      "format": "email"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 500
+    },
+    "body": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30000
+    },
+    "messageId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "from",
+    "subject",
+    "body",
+    "messageId"
+  ],
+  "additionalProperties": false
+}

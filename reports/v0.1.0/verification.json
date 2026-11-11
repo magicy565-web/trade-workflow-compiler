@@ -1,0 +1,25 @@
+{
+  "scope": "Clean core distribution without node_modules or development toolchain installation",
+  "date": "2026-11-11",
+  "checks": {
+    "clean_tests": "80 passed, 0 failed; real core and explicitly synthetic provider fixtures",
+    "initialization": "Fresh separate role keys generated; secrets not printed; repeat init refused",
+    "unconfigured_compile": "Blocked, exit 2; missing company/budget and disabled capabilities do not execute",
+    "unconfigured_doctor": "12 disabled capabilities correctly not ready; exit 2",
+    "actual_server_smoke": "Node server started; health/static/CSP/auth/real blocked compile and SQLite file verified without installed npm dependencies",
+    "graceful_shutdown": "SIGTERM exit 0; no generated secrets in stdout/stderr"
+  },
+  "node": "v22.16.0",
+  "platform": "Linux x64 container",
+  "not_verified": [
+    "Live user OpenMausBot and real workers",
+    "Real email or sample gateway and external effects",
+    "Live model account/fees",
+    "Optional Temporal SDK build and live service",
+    "Docker build/runtime",
+    "Windows runtime",
+    "GitHub remote create/push or Actions",
+    "Interactive browser workflow; policy blocked localhost browser navigation",
+    "Load/penetration testing; no production-readiness claim"
+  ]
+}

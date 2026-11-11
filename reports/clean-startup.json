@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "version": "0.2.0",
+  "runtime": "v22.16.0",
+  "withoutNodeModules": true,
+  "testCount": 117,
+  "health": {
+    "status": "ok",
+    "service": "trade-workflow-compiler",
+    "version": "0.2.0",
+    "externalIntegrationsVerified": false
+  },
+  "compileWithoutBindings": "blocked",
+  "enabledCapabilities": 0,
+  "capabilityCount": 12,
+  "batchList": [],
+  "eventInboxCount": 0,
+  "gracefulShutdownCode": 0,
+  "externalCallsPerformed": false
+}

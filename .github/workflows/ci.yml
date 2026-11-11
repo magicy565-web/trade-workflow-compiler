@@ -1,0 +1,35 @@
+name: Validate compiler and runtime
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install --ignore-scripts
+      - run: npm run check
+      - run: npm run export:schema
+      - name: Generated artifacts must match committed source
+        run: git diff --exit-code -- dist schemas
+  temporal-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts
+        working-directory: integrations/temporal
+      - run: npm run build
+        working-directory: integrations/temporal

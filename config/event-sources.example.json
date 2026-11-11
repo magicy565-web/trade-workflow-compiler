@@ -1,0 +1,8 @@
+[
+  {
+    "id": "mail-gateway",
+    "tenantId": "default",
+    "secretEnv": "TWC_MAIL_EVENTS_SECRET",
+    "enabled": false
+  }
+]

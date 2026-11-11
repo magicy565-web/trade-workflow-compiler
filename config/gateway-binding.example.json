@@ -1,0 +1,15 @@
+{
+  "id": "outreach.send",
+  "version": "1.0.0",
+  "description": "真实业务网关示例；默认关闭，替换实际URL后需现场验收",
+  "inputContract": "OutreachDraftsV1",
+  "outputContract": "SendReceiptsV1",
+  "effect": "external",
+  "enabled": false,
+  "maxCostMicros": 500000,
+  "binding": {
+    "adapter": "http",
+    "endpoint": "https://replace-with-your-real-gateway.invalid",
+    "secretEnv": "TWC_GATEWAY_SECRET"
+  }
+}

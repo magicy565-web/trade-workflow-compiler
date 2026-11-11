@@ -1,0 +1,122 @@
+[
+  {
+    "id": "market.research",
+    "description": "研究目标市场",
+    "inputContract": "EnterpriseContextV1",
+    "outputContract": "MarketBriefV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "buyers.discover",
+    "description": "发现潜在买家并附来源",
+    "inputContract": "MarketBriefV1",
+    "outputContract": "BuyerCandidatesV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "buyers.qualify",
+    "description": "验证采购匹配度",
+    "inputContract": "BuyerCandidatesV1",
+    "outputContract": "QualifiedBuyersV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "outreach.draft",
+    "description": "起草开发信，不发送",
+    "inputContract": "QualifiedBuyersV1",
+    "outputContract": "OutreachDraftsV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "outreach.send",
+    "description": "发送已审批的开发信",
+    "inputContract": "OutreachDraftsV1",
+    "outputContract": "SendReceiptsV1",
+    "effect": "external",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "replies.classify",
+    "description": "分类真实买家回复",
+    "inputContract": "BuyerReplyV1",
+    "outputContract": "ReplyClassificationV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "inquiry.normalize",
+    "description": "整理询盘与缺失字段",
+    "inputContract": "EnterpriseContextV1",
+    "outputContract": "InquiryV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "quote.prepare",
+    "description": "根据企业真实价格规则起草报价",
+    "inputContract": "InquiryV1",
+    "outputContract": "QuoteDraftV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "quote.send",
+    "description": "发送已审批的报价",
+    "inputContract": "QuoteDraftV1",
+    "outputContract": "SendReceiptsV1",
+    "effect": "external",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "sample.plan",
+    "description": "生成样品申请，不发货",
+    "inputContract": "EnterpriseContextV1",
+    "outputContract": "SampleDraftV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "sample.request",
+    "description": "提交已审批的样品申请",
+    "inputContract": "SampleDraftV1",
+    "outputContract": "SampleReceiptV1",
+    "effect": "external",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "sample.summarize",
+    "description": "整理样品反馈",
+    "inputContract": "SampleUpdateV1",
+    "outputContract": "SampleSummaryV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  }
+]

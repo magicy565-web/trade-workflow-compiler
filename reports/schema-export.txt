@@ -1,0 +1,6 @@
+
+> @qmtt/trade-workflow-compiler@0.2.0 export:schema
+> node --env-file-if-exists=.env dist/cli.js schemas
+
+.env not found. Continuing without it.
+Wrote schema files

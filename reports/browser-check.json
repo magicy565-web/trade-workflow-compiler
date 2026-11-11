@@ -1,0 +1,5 @@
+{
+  "status": "not_passed",
+  "error": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:8798/\nCall log:\n  - navigating to \"http://127.0.0.1:8798/\", waiting until \"networkidle\"\n",
+  "externalIntegrationsVerified": false
+}
