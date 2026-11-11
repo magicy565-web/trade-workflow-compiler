@@ -1,20 +1,29 @@
 {
-  "status": "passed",
-  "version": "0.2.0",
-  "runtime": "v22.16.0",
-  "withoutNodeModules": true,
-  "testCount": 117,
+  "initExit": 0,
   "health": {
     "status": "ok",
     "service": "trade-workflow-compiler",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "externalIntegrationsVerified": false
   },
-  "compileWithoutBindings": "blocked",
+  "capabilitiesCount": 12,
   "enabledCapabilities": 0,
-  "capabilityCount": 12,
-  "batchList": [],
-  "eventInboxCount": 0,
-  "gracefulShutdownCode": 0,
-  "externalCallsPerformed": false
+  "emptySummary": {
+    "calculatedAt": "2026-11-11T05:04:07.271Z",
+    "executionCount": 0,
+    "runsByStatus": {},
+    "reportedProviderCostMicros": 0,
+    "claimsPendingReview": 0,
+    "claimsRejected": 0,
+    "humanReviewedByKind": {},
+    "humanReviewedOrderValueUsdMinor": 0,
+    "disclaimer": "Human review is not independent validation of settlement, identity, payment or actual revenue. Provider costs are self-reported, not billing records."
+  },
+  "compileStatus": "blocked",
+  "blockedErrors": [
+    "MISSING_FACT",
+    "MISSING_FACT"
+  ],
+  "externalActionExecuted": false,
+  "credentialsIncluded": false
 }

@@ -1,726 +1,784 @@
 TAP version 13
-# (node:3908) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: OpenMausBot adapter executes verified public MCP protocol over real subprocess pipes
 ok 1 - OpenMausBot adapter executes verified public MCP protocol over real subprocess pipes
   ---
-  duration_ms: 318.723746
+  duration_ms: 335.899572
   type: 'test'
   ...
 # Subtest: OpenMausBot send_id is reused safely after a lost send acknowledgement
 ok 2 - OpenMausBot send_id is reused safely after a lost send acknowledgement
   ---
-  duration_ms: 138.648136
+  duration_ms: 116.375746
   type: 'test'
   ...
 # Subtest: settled is not accepted as success when job state is failed
 ok 3 - settled is not accepted as success when job state is failed
   ---
-  duration_ms: 178.0077
+  duration_ms: 173.600883
   type: 'test'
   ...
 # Subtest: settled is not accepted as success when job state is stalled
 ok 4 - settled is not accepted as success when job state is stalled
   ---
-  duration_ms: 130.605199
+  duration_ms: 134.786225
   type: 'test'
   ...
 # Subtest: settled is not accepted as success when job state is idle
 ok 5 - settled is not accepted as success when job state is idle
   ---
-  duration_ms: 94.43676
+  duration_ms: 110.657905
   type: 'test'
   ...
 # Subtest: MCP result for wrong request is rejected
 ok 6 - MCP result for wrong request is rejected
   ---
-  duration_ms: 92.0632
+  duration_ms: 169.148197
   type: 'test'
   ...
 # Subtest: OpenMausBot adapter cannot run external actions
 ok 7 - OpenMausBot adapter cannot run external actions
   ---
-  duration_ms: 0.610765
+  duration_ms: 0.858597
   type: 'test'
   ...
 # Subtest: HTTP adapter verifies live health contract, HMAC, final receipt and idempotency key
 ok 8 - HTTP adapter verifies live health contract, HMAC, final receipt and idempotency key
   ---
-  duration_ms: 32.042905
+  duration_ms: 42.325851
   type: 'test'
   ...
 # Subtest: optional LLM selector validates grounded output without executing tools
 ok 9 - optional LLM selector validates grounded output without executing tools
   ---
-  duration_ms: 7.047465
+  duration_ms: 12.055847
   type: 'test'
   ...
 # Subtest: LLM fabricated supporting quote is rejected
 ok 10 - LLM fabricated supporting quote is rejected
   ---
-  duration_ms: 5.648698
+  duration_ms: 5.390821
   type: 'test'
   ...
-# (node:3909) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8497) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: HTTP batch preview, create, list and detail operate on persisted state
 ok 11 - HTTP batch preview, create, list and detail operate on persisted state
   ---
-  duration_ms: 83.160225
+  duration_ms: 99.456679
   type: 'test'
   ...
 # Subtest: HTTP batch endpoints enforce operator role and tenant isolation
 ok 12 - HTTP batch endpoints enforce operator role and tenant isolation
   ---
-  duration_ms: 48.17532
+  duration_ms: 59.688978
   type: 'test'
   ...
 # Subtest: HTTP batch pause/resume/cancel preserve explicit control semantics
 ok 13 - HTTP batch pause/resume/cancel preserve explicit control semantics
   ---
-  duration_ms: 37.105325
+  duration_ms: 43.320411
   type: 'test'
   ...
 # Subtest: real local HTTP webhook verifies signatures, namespaces ids and deduplicates retries
 ok 14 - real local HTTP webhook verifies signatures, namespaces ids and deduplicates retries
   ---
-  duration_ms: 41.442365
+  duration_ms: 55.395122
   type: 'test'
   ...
 # Subtest: HTTP ingress rejects tampering, old signatures, disabled sources and caller-selected tenant
 ok 15 - HTTP ingress rejects tampering, old signatures, disabled sources and caller-selected tenant
   ---
-  duration_ms: 15.728048
+  duration_ms: 22.479809
   type: 'test'
   ...
 # Subtest: webhook reply wakes only its approved recipient through actual HTTP routes
 ok 16 - webhook reply wakes only its approved recipient through actual HTTP routes
   ---
-  duration_ms: 34.498216
+  duration_ms: 41.931899
   type: 'test'
   ...
 # Subtest: invalid inbox pagination and unprivileged recheck are rejected
 ok 17 - invalid inbox pagination and unprivileged recheck are rejected
   ---
-  duration_ms: 12.651856
+  duration_ms: 14.305014
   type: 'test'
   ...
-# (node:3910) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8498) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: HTTP outcomes ledger separates reporting, independent approval, and read-only summary
+ok 18 - HTTP outcomes ledger separates reporting, independent approval, and read-only summary
+  ---
+  duration_ms: 125.816039
+  type: 'test'
+  ...
+# Subtest: HTTP outcome records are strictly tenant scoped and no ingest/worker may read them
+ok 19 - HTTP outcome records are strictly tenant scoped and no ingest/worker may read them
+  ---
+  duration_ms: 54.781963
+  type: 'test'
+  ...
+# Subtest: HTTP does not credit unverified orders or allow unsupported claims
+ok 20 - HTTP does not credit unverified orders or allow unsupported claims
+  ---
+  duration_ms: 61.252883
+  type: 'test'
+  ...
+# (node:8562) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: HTTP health and static UI are real, not a fixture route
-ok 18 - HTTP health and static UI are real, not a fixture route
+ok 21 - HTTP health and static UI are real, not a fixture route
   ---
-  duration_ms: 42.853271
+  duration_ms: 41.985549
   type: 'test'
   ...
 # Subtest: API denies anonymous access and disallowed origins
-ok 19 - API denies anonymous access and disallowed origins
+ok 22 - API denies anonymous access and disallowed origins
   ---
-  duration_ms: 14.052296
+  duration_ms: 15.360758
   type: 'test'
   ...
 # Subtest: role boundary rejects viewer compilation and operator approval
-ok 20 - role boundary rejects viewer compilation and operator approval
+ok 23 - role boundary rejects viewer compilation and operator approval
   ---
-  duration_ms: 26.977512
+  duration_ms: 23.350234
   type: 'test'
   ...
 # Subtest: invalid request fields and invalid event contracts are rejected
-ok 21 - invalid request fields and invalid event contracts are rejected
+ok 24 - invalid request fields and invalid event contracts are rejected
   ---
-  duration_ms: 10.741593
+  duration_ms: 10.859319
   type: 'test'
   ...
 # Subtest: ingest credentials cannot start runs or approve work
-ok 22 - ingest credentials cannot start runs or approve work
+ok 25 - ingest credentials cannot start runs or approve work
   ---
-  duration_ms: 6.921245
+  duration_ms: 8.715205
   type: 'test'
   ...
 # Subtest: full API lifecycle with durable DB and authenticated event inbox
-ok 23 - full API lifecycle with durable DB and authenticated event inbox
+ok 26 - full API lifecycle with durable DB and authenticated event inbox
   ---
-  duration_ms: 116.66375
+  duration_ms: 77.921231
   type: 'test'
   ...
-# (node:3974) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8591) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: multiple qualified buyers park before drafting; repeated ticks do not dispatch
-ok 24 - multiple qualified buyers park before drafting; repeated ticks do not dispatch
+ok 27 - multiple qualified buyers park before drafting; repeated ticks do not dispatch
   ---
-  duration_ms: 19.737408
+  duration_ms: 26.660326
   type: 'test'
   ...
 # Subtest: fan-out shares immutable approved spec but restricts each qualified input to one recipient
-ok 25 - fan-out shares immutable approved spec but restricts each qualified input to one recipient
+ok 28 - fan-out shares immutable approved spec but restricts each qualified input to one recipient
   ---
-  duration_ms: 13.149313
+  duration_ms: 18.109918
   type: 'test'
   ...
 # Subtest: same batch key is idempotent; changed recipients or second fan-out is rejected
-ok 26 - same batch key is idempotent; changed recipients or second fan-out is rejected
+ok 29 - same batch key is idempotent; changed recipients or second fan-out is rejected
   ---
-  duration_ms: 13.144875
+  duration_ms: 19.019792
   type: 'test'
   ...
 # Subtest: batch budget includes parent research and all selected downstream worst cases
-ok 27 - batch budget includes parent research and all selected downstream worst cases
+ok 30 - batch budget includes parent research and all selected downstream worst cases
   ---
-  duration_ms: 7.487355
+  duration_ms: 13.533408
   type: 'test'
   ...
 # Subtest: fan-out transaction is all-or-nothing on a mid-insert failure
-ok 28 - fan-out transaction is all-or-nothing on a mid-insert failure
+ok 31 - fan-out transaction is all-or-nothing on a mid-insert failure
   ---
-  duration_ms: 7.410338
+  duration_ms: 12.487851
   type: 'test'
   ...
 # Subtest: suppressed contacts are excluded; all selections are validated before insertion
-ok 29 - suppressed contacts are excluded; all selections are validated before insertion
+ok 32 - suppressed contacts are excluded; all selections are validated before insertion
   ---
-  duration_ms: 9.159631
+  duration_ms: 12.096513
   type: 'test'
   ...
 # Subtest: duplicate contact emails are not silently assigned to an arbitrary buyer
-ok 30 - duplicate contact emails are not silently assigned to an arbitrary buyer
+ok 33 - duplicate contact emails are not silently assigned to an arbitrary buyer
   ---
-  duration_ms: 6.447285
+  duration_ms: 10.318579
   type: 'test'
   ...
 # Subtest: missing emails remain visible and ineligible in batch preview
-ok 31 - missing emails remain visible and ineligible in batch preview
+ok 34 - missing emails remain visible and ineligible in batch preview
   ---
-  duration_ms: 5.973745
+  duration_ms: 8.700983
   type: 'test'
   ...
 # Subtest: batch creation is tenant and role scoped
-ok 32 - batch creation is tenant and role scoped
+ok 35 - batch creation is tenant and role scoped
   ---
-  duration_ms: 6.585333
+  duration_ms: 7.87174
   type: 'test'
   ...
 # Subtest: capability drift blocks fan-out even if the source was previously approved
-ok 33 - capability drift blocks fan-out even if the source was previously approved
+ok 36 - capability drift blocks fan-out even if the source was previously approved
   ---
-  duration_ms: 7.185952
+  duration_ms: 6.635288
   type: 'test'
   ...
 # Subtest: two recipients have separate exact-content approvals and independent replies
-ok 34 - two recipients have separate exact-content approvals and independent replies
+ok 37 - two recipients have separate exact-content approvals and independent replies
   ---
-  duration_ms: 27.394917
+  duration_ms: 32.502393
   type: 'test'
   ...
 # Subtest: a malicious drafting worker cannot redirect a batch recipient
-ok 35 - a malicious drafting worker cannot redirect a batch recipient
+ok 38 - a malicious drafting worker cannot redirect a batch recipient
   ---
-  duration_ms: 8.678229
+  duration_ms: 12.118817
   type: 'test'
   ...
 # Subtest: batch pause stops pending work, resume preserves state, cancellation cannot resume
-ok 36 - batch pause stops pending work, resume preserves state, cancellation cannot resume
+ok 39 - batch pause stops pending work, resume preserves state, cancellation cannot resume
   ---
-  duration_ms: 11.376895
+  duration_ms: 15.342535
   type: 'test'
   ...
 # Subtest: shared budget is checked atomically when independent children dispatch
-ok 37 - shared budget is checked atomically when independent children dispatch
+ok 40 - shared budget is checked atomically when independent children dispatch
   ---
-  duration_ms: 9.330768
+  duration_ms: 11.016564
   type: 'test'
   ...
 # Subtest: uncertain action pauses batch, never auto-resends and blocks premature resume
-ok 38 - uncertain action pauses batch, never auto-resends and blocks premature resume
+ok 41 - uncertain action pauses batch, never auto-resends and blocks premature resume
   ---
-  duration_ms: 11.707711
+  duration_ms: 10.728893
   type: 'test'
   ...
 # Subtest: batch and approval survive closing and reopening SQLite
-ok 39 - batch and approval survive closing and reopening SQLite
+ok 42 - batch and approval survive closing and reopening SQLite
   ---
-  duration_ms: 38.701787
+  duration_ms: 62.300294
   type: 'test'
   ...
 # Subtest: modified runtime workflow cannot bypass its published version hash
-ok 40 - modified runtime workflow cannot bypass its published version hash
+ok 43 - modified runtime workflow cannot bypass its published version hash
   ---
-  duration_ms: 5.422889
+  duration_ms: 9.853261
   type: 'test'
   ...
 # Subtest: child runs inherit the original authorization deadline instead of resetting the business window
-ok 41 - child runs inherit the original authorization deadline instead of resetting the business window
+ok 44 - child runs inherit the original authorization deadline instead of resetting the business window
   ---
-  duration_ms: 7.846804
+  duration_ms: 10.111989
   type: 'test'
   ...
 # Subtest: empty qualified buyer set terminates without inventing contacts or requesting approval
-ok 42 - empty qualified buyer set terminates without inventing contacts or requesting approval
+ok 45 - empty qualified buyer set terminates without inventing contacts or requesting approval
   ---
-  duration_ms: 6.768626
+  duration_ms: 5.840155
   type: 'test'
   ...
-# (node:3991) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8650) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: compile registered playbook: buyer-development
-ok 43 - compile registered playbook: buyer-development
+ok 46 - compile registered playbook: buyer-development
   ---
-  duration_ms: 6.859733
+  duration_ms: 10.61349
   type: 'test'
   ...
 # Subtest: compile registered playbook: inquiry-quote
-ok 44 - compile registered playbook: inquiry-quote
+ok 47 - compile registered playbook: inquiry-quote
   ---
-  duration_ms: 1.517014
+  duration_ms: 4.699125
   type: 'test'
   ...
 # Subtest: compile registered playbook: sample-followup
-ok 45 - compile registered playbook: sample-followup
+ok 48 - compile registered playbook: sample-followup
   ---
-  duration_ms: 2.680628
+  duration_ms: 3.898865
   type: 'test'
   ...
 # Subtest: default registry is disabled; compiling never invents tools
-ok 46 - default registry is disabled; compiling never invents tools
+ok 49 - default registry is disabled; compiling never invents tools
   ---
-  duration_ms: 0.918006
+  duration_ms: 2.698085
   type: 'test'
   ...
 # Subtest: unknown goal is not silently converted into buyer development
-ok 47 - unknown goal is not silently converted into buyer development
+ok 50 - unknown goal is not silently converted into buyer development
   ---
-  duration_ms: 0.675813
+  duration_ms: 1.561821
   type: 'test'
   ...
 # Subtest: missing enterprise facts are not hallucinated
-ok 48 - missing enterprise facts are not hallucinated
+ok 51 - missing enterprise facts are not hallucinated
   ---
-  duration_ms: 1.217555
+  duration_ms: 4.754898
   type: 'test'
   ...
 # Subtest: unsupported request fields are rejected
-ok 49 - unsupported request fields are rejected
+ok 52 - unsupported request fields are rejected
   ---
-  duration_ms: 0.989353
+  duration_ms: 1.14072
   type: 'test'
   ...
 # Subtest: market extraction gives hints, does not silently rewrite profile
-ok 50 - market extraction gives hints, does not silently rewrite profile
+ok 53 - market extraction gives hints, does not silently rewrite profile
   ---
-  duration_ms: 0.598097
+  duration_ms: 1.071787
   type: 'test'
   ...
 # Subtest: validator blocks duplicate IDs
-ok 51 - validator blocks duplicate IDs
+ok 54 - validator blocks duplicate IDs
   ---
-  duration_ms: 2.453849
+  duration_ms: 4.708328
   type: 'test'
   ...
 # Subtest: validator blocks cycle
-ok 52 - validator blocks cycle
+ok 55 - validator blocks cycle
   ---
-  duration_ms: 2.110314
+  duration_ms: 4.740075
   type: 'test'
   ...
 # Subtest: validator blocks dangling edge
-ok 53 - validator blocks dangling edge
+ok 56 - validator blocks dangling edge
   ---
-  duration_ms: 2.739797
+  duration_ms: 2.926117
   type: 'test'
   ...
 # Subtest: validator blocks unreachable node
-ok 54 - validator blocks unreachable node
+ok 57 - validator blocks unreachable node
   ---
-  duration_ms: 2.480578
+  duration_ms: 2.287149
   type: 'test'
   ...
 # Subtest: validator blocks fictional capability
-ok 55 - validator blocks fictional capability
+ok 58 - validator blocks fictional capability
   ---
-  duration_ms: 2.051846
+  duration_ms: 1.666028
   type: 'test'
   ...
 # Subtest: validator blocks pinned capability version
-ok 56 - validator blocks pinned capability version
+ok 59 - validator blocks pinned capability version
   ---
-  duration_ms: 1.612297
+  duration_ms: 4.941017
   type: 'test'
   ...
 # Subtest: validator blocks data contract mismatch
-ok 57 - validator blocks data contract mismatch
+ok 60 - validator blocks data contract mismatch
   ---
-  duration_ms: 1.169173
+  duration_ms: 1.434901
   type: 'test'
   ...
 # Subtest: validator blocks contract forgery
-ok 58 - validator blocks contract forgery
+ok 61 - validator blocks contract forgery
   ---
-  duration_ms: 1.573769
+  duration_ms: 1.369203
   type: 'test'
   ...
 # Subtest: validator blocks approval deletion
-ok 59 - validator blocks approval deletion
+ok 62 - validator blocks approval deletion
   ---
-  duration_ms: 1.626778
+  duration_ms: 1.659648
   type: 'test'
   ...
 # Subtest: validator blocks approval bypass
-ok 60 - validator blocks approval bypass
+ok 63 - validator blocks approval bypass
   ---
-  duration_ms: 1.555072
+  duration_ms: 1.538907
   type: 'test'
   ...
 # Subtest: validator blocks different approved payload
-ok 61 - validator blocks different approved payload
+ok 64 - validator blocks different approved payload
   ---
-  duration_ms: 1.943513
+  duration_ms: 2.130834
   type: 'test'
   ...
 # Subtest: validator blocks rejected approval path
-ok 62 - validator blocks rejected approval path
+ok 65 - validator blocks rejected approval path
   ---
-  duration_ms: 1.403845
+  duration_ms: 1.733769
   type: 'test'
   ...
 # Subtest: validator blocks external automatic retries
-ok 63 - validator blocks external automatic retries
+ok 66 - validator blocks external automatic retries
   ---
-  duration_ms: 1.322283
+  duration_ms: 2.303182
   type: 'test'
   ...
 # Subtest: validator blocks side effect disguised as research
-ok 64 - validator blocks side effect disguised as research
+ok 67 - validator blocks side effect disguised as research
   ---
-  duration_ms: 1.544265
+  duration_ms: 1.600029
   type: 'test'
   ...
 # Subtest: validator blocks cost underestimation
-ok 65 - validator blocks cost underestimation
+ok 68 - validator blocks cost underestimation
   ---
-  duration_ms: 1.321731
+  duration_ms: 1.382312
   type: 'test'
   ...
 # Subtest: validator blocks insufficient total budget
-ok 66 - validator blocks insufficient total budget
+ok 69 - validator blocks insufficient total budget
   ---
-  duration_ms: 1.143424
+  duration_ms: 2.451796
   type: 'test'
   ...
 # Subtest: validator blocks missing facts cannot be published
-ok 67 - validator blocks missing facts cannot be published
+ok 70 - validator blocks missing facts cannot be published
   ---
-  duration_ms: 1.698696
+  duration_ms: 1.529223
   type: 'test'
   ...
 # Subtest: validator blocks invented correlation field
-ok 68 - validator blocks invented correlation field
+ok 71 - validator blocks invented correlation field
   ---
-  duration_ms: 2.227309
+  duration_ms: 2.477944
   type: 'test'
   ...
 # Subtest: validator blocks unsafe timeout route
-ok 69 - validator blocks unsafe timeout route
+ok 72 - validator blocks unsafe timeout route
   ---
-  duration_ms: 2.089983
+  duration_ms: 2.961019
   type: 'test'
   ...
 # Subtest: validator blocks dynamic JS condition
-ok 70 - validator blocks dynamic JS condition
+ok 73 - validator blocks dynamic JS condition
   ---
-  duration_ms: 1.922973
+  duration_ms: 3.343722
   type: 'test'
   ...
 # Subtest: validator blocks unsafe field access
-ok 71 - validator blocks unsafe field access
+ok 74 - validator blocks unsafe field access
   ---
-  duration_ms: 2.106629
+  duration_ms: 2.485636
   type: 'test'
   ...
 # Subtest: JSON Schema subset fails on unsupported keywords
-ok 72 - JSON Schema subset fails on unsupported keywords
+ok 75 - JSON Schema subset fails on unsupported keywords
   ---
-  duration_ms: 0.157677
+  duration_ms: 0.246299
   type: 'test'
   ...
 # Subtest: canonical hashes ignore key order but bind content
-ok 73 - canonical hashes ignore key order but bind content
+ok 76 - canonical hashes ignore key order but bind content
   ---
-  duration_ms: 0.146369
+  duration_ms: 0.146249
   type: 'test'
   ...
 # Subtest: prototype field traversal is forbidden
-ok 74 - prototype field traversal is forbidden
+ok 77 - prototype field traversal is forbidden
   ---
-  duration_ms: 0.155743
+  duration_ms: 0.237596
   type: 'test'
   ...
 # Subtest: unsafe HTTP and credential-bearing URLs are blocked
-ok 75 - unsafe HTTP and credential-bearing URLs are blocked
+ok 78 - unsafe HTTP and credential-bearing URLs are blocked
   ---
-  duration_ms: 0.203134
+  duration_ms: 0.207571
   type: 'test'
   ...
 # Subtest: external action cannot be bound to a general-purpose bot
-ok 76 - external action cannot be bound to a general-purpose bot
+ok 79 - external action cannot be bound to a general-purpose bot
   ---
-  duration_ms: 0.281703
+  duration_ms: 0.308732
   type: 'test'
   ...
 # Subtest: strict nested objects reject prototype pollution payloads
-ok 77 - strict nested objects reject prototype pollution payloads
+ok 80 - strict nested objects reject prototype pollution payloads
   ---
-  duration_ms: 0.108392
+  duration_ms: 0.218928
   type: 'test'
   ...
 # Subtest: binding drift requires recompile even when capability version is unchanged
-ok 78 - binding drift requires recompile even when capability version is unchanged
+ok 81 - binding drift requires recompile even when capability version is unchanged
   ---
-  duration_ms: 1.918226
+  duration_ms: 3.797032
   type: 'test'
   ...
-# (node:4029) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8706) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: early reply remains unmatched until a real receipt binds its run
-ok 79 - early reply remains unmatched until a real receipt binds its run
+ok 82 - early reply remains unmatched until a real receipt binds its run
   ---
-  duration_ms: 30.376758
+  duration_ms: 35.346829
   type: 'test'
   ...
 # Subtest: wrong sender is quarantined without failing or advancing a waiting run
-ok 80 - wrong sender is quarantined without failing or advancing a waiting run
+ok 83 - wrong sender is quarantined without failing or advancing a waiting run
   ---
-  duration_ms: 19.07149
+  duration_ms: 26.941638
   type: 'test'
   ...
 # Subtest: wrong sender arriving before receipt is quarantined when the receipt is registered
-ok 81 - wrong sender arriving before receipt is quarantined when the receipt is registered
+ok 84 - wrong sender arriving before receipt is quarantined when the receipt is registered
   ---
-  duration_ms: 10.659659
+  duration_ms: 14.920126
   type: 'test'
   ...
 # Subtest: provider correlation collision across runs fails closed after external dispatch
-ok 82 - provider correlation collision across runs fails closed after external dispatch
+ok 85 - provider correlation collision across runs fails closed after external dispatch
   ---
-  duration_ms: 19.663036
+  duration_ms: 29.398111
   type: 'test'
   ...
 # Subtest: gateway receipt for a different email is rejected before waiting for replies
-ok 83 - gateway receipt for a different email is rejected before waiting for replies
+ok 86 - gateway receipt for a different email is rejected before waiting for replies
   ---
-  duration_ms: 13.520328
+  duration_ms: 18.963968
   type: 'test'
   ...
 # Subtest: late replies to closed runs are retained for human review, not treated as new work
-ok 84 - late replies to closed runs are retained for human review, not treated as new work
+ok 87 - late replies to closed runs are retained for human review, not treated as new work
   ---
-  duration_ms: 15.203291
+  duration_ms: 17.953424
   type: 'test'
   ...
 # Subtest: event inbox pagination is tenant scoped, complete and non-overlapping
-ok 85 - event inbox pagination is tenant scoped, complete and non-overlapping
+ok 88 - event inbox pagination is tenant scoped, complete and non-overlapping
   ---
-  duration_ms: 3.770442
+  duration_ms: 5.341307
   type: 'test'
   ...
 # Subtest: invalid event schema is rejected at store boundary, not left to poison a run
-ok 86 - invalid event schema is rejected at store boundary, not left to poison a run
+ok 89 - invalid event schema is rejected at store boundary, not left to poison a run
   ---
-  duration_ms: 1.986088
+  duration_ms: 2.792836
   type: 'test'
   ...
 # Subtest: signed webhooks bind raw body, source id and timestamp; key and replay-window checks are mandatory
-ok 87 - signed webhooks bind raw body, source id and timestamp; key and replay-window checks are mandatory
+ok 90 - signed webhooks bind raw body, source id and timestamp; key and replay-window checks are mandatory
   ---
-  duration_ms: 0.995853
+  duration_ms: 1.469433
   type: 'test'
   ...
 # Subtest: v1-shaped database migration preserves run, pending event and audit, reopens safely and rejects unknown schema
-ok 88 - v1-shaped database migration preserves run, pending event and audit, reopens safely and rejects unknown schema
+ok 91 - v1-shaped database migration preserves run, pending event and audit, reopens safely and rejects unknown schema
   ---
-  duration_ms: 18.228687
+  duration_ms: 32.265769
   type: 'test'
   ...
 # Subtest: additional replies received before completion are retained and moved to human review
-ok 89 - additional replies received before completion are retained and moved to human review
+ok 92 - additional replies received before completion are retained and moved to human review
   ---
-  duration_ms: 14.01524
+  duration_ms: 14.98237
   type: 'test'
   ...
-# (node:4069) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8719) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: outbound result requires a real completed action receipt and independent human review
+ok 93 - outbound result requires a real completed action receipt and independent human review
+  ---
+  duration_ms: 39.961116
+  type: 'test'
+  ...
+# Subtest: no fabricated buyer reply, rejected wrong event, and type cannot masquerade as a provider receipt
+ok 94 - no fabricated buyer reply, rejected wrong event, and type cannot masquerade as a provider receipt
+  ---
+  duration_ms: 21.401633
+  type: 'test'
+  ...
+# Subtest: RFQ outcome only accepts consumed reply event from matching run and classified as RFQ
+ok 95 - RFQ outcome only accepts consumed reply event from matching run and classified as RFQ
+  ---
+  duration_ms: 25.393677
+  type: 'test'
+  ...
+# Subtest: document-based order remains pending until independent review, amounts never counted as actual revenue
+ok 96 - document-based order remains pending until independent review, amounts never counted as actual revenue
+  ---
+  duration_ms: 22.283514
+  type: 'test'
+  ...
+# Subtest: evidence rejections are immutable and tenant isolation prevents reading even a known id
+ok 97 - evidence rejections are immutable and tenant isolation prevents reading even a known id
+  ---
+  duration_ms: 17.694075
+  type: 'test'
+  ...
+# Subtest: schema v2 persists and migrates to v3 safely and never recreates or erases claims
+ok 98 - schema v2 persists and migrates to v3 safely and never recreates or erases claims
+  ---
+  duration_ms: 21.323666
+  type: 'test'
+  ...
+# (node:8788) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: durable complete lifecycle: buyer-development
-ok 90 - durable complete lifecycle: buyer-development
+ok 99 - durable complete lifecycle: buyer-development
   ---
-  duration_ms: 32.949946
+  duration_ms: 36.932845
   type: 'test'
   ...
 # Subtest: durable complete lifecycle: inquiry-quote
-ok 91 - durable complete lifecycle: inquiry-quote
+ok 100 - durable complete lifecycle: inquiry-quote
   ---
-  duration_ms: 10.000682
+  duration_ms: 11.342824
   type: 'test'
   ...
 # Subtest: durable complete lifecycle: sample-followup
-ok 92 - durable complete lifecycle: sample-followup
+ok 101 - durable complete lifecycle: sample-followup
   ---
-  duration_ms: 7.309127
+  duration_ms: 9.013853
   type: 'test'
   ...
 # Subtest: rejecting approval never sends
-ok 93 - rejecting approval never sends
+ok 102 - rejecting approval never sends
   ---
-  duration_ms: 7.21054
+  duration_ms: 8.194865
   type: 'test'
   ...
 # Subtest: approval content hash is mandatory
-ok 94 - approval content hash is mandatory
+ok 103 - approval content hash is mandatory
   ---
-  duration_ms: 6.774526
+  duration_ms: 12.205317
   type: 'test'
   ...
 # Subtest: initiator cannot approve their own outbound operation
-ok 95 - initiator cannot approve their own outbound operation
+ok 104 - initiator cannot approve their own outbound operation
   ---
-  duration_ms: 5.92376
+  duration_ms: 12.919477
   type: 'test'
   ...
 # Subtest: expired approval cannot be applied
-ok 96 - expired approval cannot be applied
+ok 105 - expired approval cannot be applied
   ---
-  duration_ms: 9.59236
+  duration_ms: 8.350177
   type: 'test'
   ...
 # Subtest: approval decisions are immutable and duplicate same decision is idempotent
-ok 97 - approval decisions are immutable and duplicate same decision is idempotent
+ok 106 - approval decisions are immutable and duplicate same decision is idempotent
   ---
-  duration_ms: 6.193604
+  duration_ms: 7.923859
   type: 'test'
   ...
 # Subtest: start idempotency returns same run; conflict rejects
-ok 98 - start idempotency returns same run; conflict rejects
+ok 107 - start idempotency returns same run; conflict rejects
   ---
-  duration_ms: 2.337263
+  duration_ms: 2.849031
   type: 'test'
   ...
 # Subtest: tenant isolation protects run, definition and approvals
-ok 99 - tenant isolation protects run, definition and approvals
+ok 108 - tenant isolation protects run, definition and approvals
   ---
-  duration_ms: 6.776679
+  duration_ms: 6.176249
   type: 'test'
   ...
 # Subtest: workflow author cannot publish own version
-ok 100 - workflow author cannot publish own version
+ok 109 - workflow author cannot publish own version
   ---
-  duration_ms: 1.802923
+  duration_ms: 2.06178
   type: 'test'
   ...
 # Subtest: published definitions and version keys cannot be overwritten
-ok 101 - published definitions and version keys cannot be overwritten
+ok 110 - published definitions and version keys cannot be overwritten
   ---
-  duration_ms: 2.570854
+  duration_ms: 2.332787
   type: 'test'
   ...
 # Subtest: duplicate business events are deduplicated; payload changes conflict
-ok 102 - duplicate business events are deduplicated; payload changes conflict
+ok 111 - duplicate business events are deduplicated; payload changes conflict
   ---
-  duration_ms: 1.970133
+  duration_ms: 2.622882
   type: 'test'
   ...
 # Subtest: early event after run creation is retained until the wait node
-ok 103 - early event after run creation is retained until the wait node
+ok 112 - early event after run creation is retained until the wait node
   ---
-  duration_ms: 12.744905
+  duration_ms: 11.630715
   type: 'test'
   ...
 # Subtest: events of wrong type, correlation or tenant cannot wake a run
-ok 104 - events of wrong type, correlation or tenant cannot wake a run
+ok 113 - events of wrong type, correlation or tenant cannot wake a run
   ---
-  duration_ms: 10.786911
+  duration_ms: 12.948491
   type: 'test'
   ...
 # Subtest: reply timeout terminates instead of inventing a buyer response
-ok 105 - reply timeout terminates instead of inventing a buyer response
+ok 114 - reply timeout terminates instead of inventing a buyer response
   ---
-  duration_ms: 14.089722
+  duration_ms: 9.651228
   type: 'test'
   ...
 # Subtest: invalid worker output stops before outreach
-ok 106 - invalid worker output stops before outreach
+ok 115 - invalid worker output stops before outreach
   ---
-  duration_ms: 4.042019
+  duration_ms: 2.998275
   type: 'test'
   ...
 # Subtest: provider budget overrun stops further work and retains reported cost
-ok 107 - provider budget overrun stops further work and retains reported cost
+ok 116 - provider budget overrun stops further work and retains reported cost
   ---
-  duration_ms: 5.133995
+  duration_ms: 3.031735
   type: 'test'
   ...
 # Subtest: safe transient research retry is bounded and reserves another attempt
-ok 108 - safe transient research retry is bounded and reserves another attempt
+ok 117 - safe transient research retry is bounded and reserves another attempt
   ---
-  duration_ms: 10.497527
+  duration_ms: 7.668376
   type: 'test'
   ...
 # Subtest: uncertain outbound result is never automatically resent
-ok 109 - uncertain outbound result is never automatically resent
+ok 118 - uncertain outbound result is never automatically resent
   ---
-  duration_ms: 16.486405
+  duration_ms: 16.839604
   type: 'test'
   ...
 # Subtest: suppression list blocks a recipient even after approval
-ok 110 - suppression list blocks a recipient even after approval
+ok 119 - suppression list blocks a recipient even after approval
   ---
-  duration_ms: 10.697667
+  duration_ms: 14.329912
   type: 'test'
   ...
 # Subtest: cancellation stops subsequent dispatch
-ok 111 - cancellation stops subsequent dispatch
+ok 120 - cancellation stops subsequent dispatch
   ---
-  duration_ms: 2.169903
+  duration_ms: 1.909081
   type: 'test'
   ...
 # Subtest: SQLite state survives closing and reopening the store
-ok 112 - SQLite state survives closing and reopening the store
+ok 121 - SQLite state survives closing and reopening the store
   ---
-  duration_ms: 37.500307
+  duration_ms: 44.896423
   type: 'test'
   ...
 # Subtest: in-flight external action on crash is reconciled, never blindly replayed
-ok 113 - in-flight external action on crash is reconciled, never blindly replayed
+ok 122 - in-flight external action on crash is reconciled, never blindly replayed
   ---
-  duration_ms: 7.063299
+  duration_ms: 7.301846
   type: 'test'
   ...
 # Subtest: audit modification is detected
-ok 114 - audit modification is detected
+ok 123 - audit modification is detected
   ---
-  duration_ms: 1.610775
+  duration_ms: 1.972577
   type: 'test'
   ...
 # Subtest: concurrent ticks cannot dispatch one step twice
-ok 115 - concurrent ticks cannot dispatch one step twice
+ok 124 - concurrent ticks cannot dispatch one step twice
   ---
-  duration_ms: 27.485032
+  duration_ms: 28.691702
   type: 'test'
   ...
 # Subtest: every worker receives original company facts and business request
-ok 116 - every worker receives original company facts and business request
+ok 125 - every worker receives original company facts and business request
   ---
-  duration_ms: 7.625923
+  duration_ms: 7.972391
   type: 'test'
   ...
 # Subtest: v1 rejects multiple outbound recipients instead of silently waiting for only the first reply
-ok 117 - v1 rejects multiple outbound recipients instead of silently waiting for only the first reply
+ok 126 - v1 rejects multiple outbound recipients instead of silently waiting for only the first reply
   ---
-  duration_ms: 5.277832
+  duration_ms: 6.048386
   type: 'test'
   ...
-1..117
-# tests 117
+1..126
+# tests 126
 # suites 0
-# pass 117
+# pass 126
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1147.437467
+# duration_ms 1544.432631

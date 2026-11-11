@@ -57,7 +57,7 @@ test('v1-shaped database migration preserves run, pending event and audit, reope
  try{
   const before=t.store.getRun(actor.tenantId,t.run.id);t.store.ingest(evt(t,'migration-event'),actor);
   t.store.db.exec("DROP TABLE batches; DROP TABLE batch_members; DROP TABLE correlations; DROP TABLE event_routes; UPDATE metadata SET value='1' WHERE key='schema_version';");t.store.close();
-  reopened=new Store(path);assert.equal(reopened.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get().value,'2');assert.deepEqual(reopened.getRun(actor.tenantId,t.run.id),before);assert.equal(new EventInbox(reopened).get(actor.tenantId,'migration-event').state,'unmatched');assert.equal(reopened.verifyAudit(),true);
+  reopened=new Store(path);assert.equal(reopened.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get().value,'3');assert.deepEqual(reopened.getRun(actor.tenantId,t.run.id),before);assert.equal(new EventInbox(reopened).get(actor.tenantId,'migration-event').state,'unmatched');assert.equal(reopened.verifyAudit(),true);
   reopened.close();reopened=new Store(path);assert.equal(new EventInbox(reopened).list(actor.tenantId).items.length,1);
   reopened.db.exec("UPDATE metadata SET value='99' WHERE key='schema_version'");reopened.close();reopened=undefined;assert.throws(()=>new Store(path),e=>e.code==='DB_VERSION');
  }finally{try{reopened?.close();}catch{}try{t.store.close();}catch{}rmSync(dir,{recursive:true,force:true});}

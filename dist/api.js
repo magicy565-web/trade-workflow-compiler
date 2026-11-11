@@ -12,6 +12,7 @@ import { assertSchema, obj, str, int, array } from './schema.js';
 import { DomainError, fail, hash } from './util.js';
 import { Batches } from './batches.js';
 import { EventInbox, eventInputSchema, verifyWebhook } from './events.js';
+import { Outcomes, outcomeInputSchema } from './outcomes.js';
 const staticFiles = { '/': ['index.html', 'text/html; charset=utf-8'], '/app.js': ['app.js', 'text/javascript; charset=utf-8'], '/style.css': ['style.css', 'text/css; charset=utf-8'] };
 const assets = new Map(Object.entries(staticFiles).map(([url, [path, type]]) => [url, { type, content: readFileSync(fileURLToPath(new URL('../public/' + path, import.meta.url))) }]));
 async function rawBody(req) {
@@ -43,7 +44,7 @@ function permit(actor, ...roles) {
 }
 function reply(res, status, value) { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(value)); }
 export function createApi(config, store, engine) {
-    const batches = new Batches(store), inbox = new EventInbox(store);
+    const batches = new Batches(store), inbox = new EventInbox(store), outcomes = new Outcomes(store);
     return createServer(async (req, res) => {
         const requestId = randomUUID();
         res.setHeader('x-request-id', requestId);
@@ -54,7 +55,7 @@ export function createApi(config, store, engine) {
         try {
             const url = new URL(req.url ?? '/', 'http://localhost'), path = url.pathname, method = req.method ?? 'GET';
             if (method === 'GET' && path === '/health') {
-                reply(res, 200, { status: 'ok', service: 'trade-workflow-compiler', version: '0.2.0', externalIntegrationsVerified: false });
+                reply(res, 200, { status: 'ok', service: 'trade-workflow-compiler', version: '0.3.0', externalIntegrationsVerified: false });
                 return;
             }
             if (method === 'GET' && assets.has(path)) {
@@ -153,7 +154,44 @@ export function createApi(config, store, engine) {
                 reply(res, 200, inbox.list(tenant, url.searchParams.has('before') ? Number(url.searchParams.get('before')) : undefined, Number(url.searchParams.get('limit') ?? 100)));
                 return;
             }
+            if (method === 'GET' && path === '/api/outcomes') {
+                permit(actor, 'admin', 'operator', 'approver', 'viewer');
+                reply(res, 200, outcomes.list(tenant, Number(url.searchParams.get('limit') ?? 200)));
+                return;
+            }
+            if (method === 'POST' && path === '/api/outcomes') {
+                permit(actor, 'admin', 'operator');
+                const input = await body(req);
+                assertSchema(outcomeInputSchema, input, 'OUTCOME_SCHEMA');
+                reply(res, 201, outcomes.report(tenant, input, actor));
+                return;
+            }
+            if (method === 'GET' && path === '/api/outcomes/summary') {
+                permit(actor, 'admin', 'operator', 'approver', 'viewer');
+                reply(res, 200, outcomes.summary(tenant));
+                return;
+            }
             let match;
+            if ((match = path.match(/^\/api\/outcomes\/([^/]+)(?:\/(decision))?$/))) {
+                if (method === 'GET' && !match[2]) {
+                    permit(actor, 'admin', 'operator', 'approver', 'viewer');
+                    reply(res, 200, outcomes.get(tenant, match[1]));
+                    return;
+                }
+                if (method === 'POST' && match[2]) {
+                    permit(actor, 'approver');
+                    const input = await body(req);
+                    assertSchema(obj({ hash: str(64, 64), approved: { type: 'boolean' }, note: str(10, 3000) }), input);
+                    const p = input;
+                    reply(res, 200, outcomes.decide(tenant, match[1], p.hash, p.approved, p.note, actor));
+                    return;
+                }
+            }
+            if (method === 'GET' && (match = path.match(/^\/api\/runs\/([^/]+)\/(outcomes|dossier)$/))) {
+                permit(actor, 'admin', 'operator', 'approver', 'viewer');
+                reply(res, 200, match[2] === 'dossier' ? outcomes.dossier(tenant, match[1]) : outcomes.byRun(tenant, match[1]));
+                return;
+            }
             if ((match = path.match(/^\/api\/runs\/([^/]+)\/batch-preview$/)) && method === 'GET') {
                 permit(actor, 'admin', 'operator', 'approver', 'viewer');
                 reply(res, 200, batches.preview(tenant, match[1]));

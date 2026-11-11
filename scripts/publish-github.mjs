@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 // Runs on the user's own computer with their existing GitHub CLI authentication.
-// Creates ONE new repository. Never overwrites a repository or force-pushes.
+// Creates a new repository OR safely pushes to an existing EMPTY one; never force-pushes.
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, realpathSync } from 'node:fs';
 // fileURLToPath is necessary on Windows and for paths containing spaces/non-ASCII names.
 const { fileURLToPath } = await import('node:url');
 process.chdir(fileURLToPath(new URL('..', import.meta.url)));
 const args = process.argv.slice(2);
-if (args.some(a => a !== '--public'))
-    throw Error('Only --public is supported; default visibility is private');
+if (args.some(a => !['--public', '--existing'].includes(a)) || (args.includes('--existing') && args.includes('--public')))
+    throw Error('Use either --existing or --public, not both');
 const owner = 'magicy565-web', name = 'trade-workflow-compiler', full = `${owner}/${name}`;
 function run(command, args, capture = false, allowFailure = false) { const r = spawnSync(command, args, { encoding: 'utf8', stdio: capture ? 'pipe' : 'inherit', shell: false }); if (r.error)
     throw Error(`${command} is unavailable. Install it locally first. ${r.error.message}`); if (r.status !== 0 && !allowFailure)
@@ -21,10 +21,19 @@ try {
     if (login !== owner)
         throw Error(`Authenticated as ${login}, expected ${owner}. Switch accounts locally before publishing.`);
     const existing = run('gh', ['api', `repos/${full}`, '--silent'], true, true);
-    if (existing.status === 0)
-        throw Error(`${full} already exists. No files were pushed or overwritten.`);
-    if (!/404/.test(existing.stderr))
-        throw Error('Could not confirm repository absence; refusing to create on an ambiguous network/permission error.');
+    if (args.includes('--existing')) {
+        if (existing.status !== 0) throw Error('Existing repository is inaccessible; refusing to push');
+        const info = run('gh', ['api', `repos/${full}`, '--jq', '{full_name,owner:.owner.login,default_branch,archived}'], true);
+        const repo = JSON.parse(info.stdout);
+        if (repo.full_name !== full || repo.owner !== owner || repo.archived || repo.default_branch !== 'main')
+            throw Error('Unexpected remote owner/branch/settings; refusing to push');
+        const remote = run('git', ['ls-remote', `https://github.com/${full}.git`, 'refs/heads/*'], true);
+        if (remote.stdout.trim()) throw Error('Remote already contains commits. Inspect and merge manually; no overwrite attempted.');
+    }
+    else {
+        if (existing.status === 0) throw Error(`${full} already exists. Use --existing only if it is still EMPTY.`);
+        if (!/404/.test(existing.stderr)) throw Error('Could not confirm repository absence; refusing creation.');
+    }
     const tests = readdirSync('test').filter(n => n.endsWith('.test.mjs')).map(n => 'test/' + n);
     run(process.execPath, ['--test', ...tests]);
     if (!existsSync('.git'))
@@ -50,9 +59,16 @@ try {
     const changes = run('git', ['diff', '--cached', '--quiet'], true, true);
     if (changes.status !== 0)
         run('git', ['commit', '-m', 'feat: initial trade workflow compiler v0.1.0']);
-    run('gh', ['repo', 'create', full, args.includes('--public') ? '--public' : '--private', '--source=.', '--remote=origin', '--push', '--description', 'Self-hosted trade workflow compiler with evidence, approvals, durable execution and OpenMausBot integration']);
+    if (args.includes('--existing')) {
+        run('gh', ['auth', 'setup-git']);
+        run('git', ['remote', 'add', 'origin', `https://github.com/${full}.git`]);
+        run('git', ['push', '-u', 'origin', 'main']);
+    }
+    else {
+        run('gh', ['repo', 'create', full, args.includes('--public') ? '--public' : '--private', '--source=.', '--remote=origin', '--push', '--description', 'Self-hosted trade workflow compiler with evidence, approvals, durable execution and OpenMausBot integration']);
+    }
     run('gh', ['repo', 'view', full, '--json', 'url,isPrivate,nameWithOwner']);
-    console.log('Repository created and pushed successfully. Verify the returned URL and GitHub Actions before deployment.');
+    console.log('Git push completed without a force update. Verify main HEAD and GitHub Actions before deployment.');
 }
 catch (error) {
     console.error(error.message);

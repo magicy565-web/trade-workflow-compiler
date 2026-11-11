@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 — 2026-11-11
+
+- Add evidence-backed outcome ledger with strict tenant/run ownership and independent review.
+- Count human-reviewed commercial claims separately from worker execution outcomes; no automatic assertion of revenue.
+- Reject duplicate evidence claims; require consumed reply events or durable action receipts; order records remain human-provided HTTPS pointers.
+- Add complete per-run dossier with content hash, summary endpoint and Chinese workbench review UI.
+- Add schema 2 -> 3 migration, v0.1 -> v0.3 compatibility, and outcome/HTTP regression tests.
+- Existing GitHub repository publication path now supported via safe `--existing` option (only an empty remote; no force push).
+- No real OpenMausBot or email provider integration verified; no financial attestation or delivery guarantee.
+
 ## 0.2.0 — 2026-11-11
 
 - Add buyer batch fan-out from one qualified research result, per-recipient run/approval, explicit selection, and atomic parent cancellation.

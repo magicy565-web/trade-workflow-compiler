@@ -1,0 +1,10 @@
+{
+  "upgrade": "v0.2->v0.3",
+  "oldSchema": "2",
+  "newSchema": "3",
+  "preservedRun": "a98b96aa-bba0-44c9-a0e5-994bafa31b6a",
+  "preservedDefinitionCount": 1,
+  "oldAuditValid": true,
+  "newAuditValid": true,
+  "outcomeClaims": 0
+}

@@ -1,5 +1,5 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>外贸业务流程编译器 · TWC</title><link rel="stylesheet" href="/style.css"></head><body>
-<header><div><span class="eyebrow">TRADE WORKFLOW COMPILER</span><h1>把业务目标变成可审计的流程。</h1><p>先规划、再校验、经审批执行。没有真实工具，就停在编译阶段。</p></div><span class="badge">v0.2.0 · 自托管</span></header>
+<header><div><span class="eyebrow">TRADE WORKFLOW COMPILER</span><h1>把业务目标变成可审计的流程。</h1><p>先规划、再校验、经审批执行。没有真实工具，就停在编译阶段。</p></div><span class="badge">v0.3.0 · 自托管</span></header>
 <main><section class="panel"><h2>连接企业工作区</h2><div class="row"><input id="token" type="password" autocomplete="off" placeholder="粘贴本地访问令牌；仅保存在当前页面内存"><button id="connect">连接</button><button id="logout" class="secondary">退出</button></div><p id="identity" class="muted">尚未登录。令牌位于本机 data/auth.local.json，请勿发送到聊天或提交到 GitHub。</p></section>
 <div class="grid"><section class="panel"><span class="eyebrow">01 / DEFINE</span><h2>你要推进什么业务？</h2><textarea id="request" rows="4" placeholder="例如：我们主营服装面料，要开发美国中小品牌客户。开发信需要销售负责人逐条核对。"></textarea>
 <label>企业名称<input id="company" placeholder="使用真实企业名称"></label><label>产品范围<input id="products" placeholder="以逗号分隔；不自动编造产品与产能"></label><label>目标市场<input id="markets" placeholder="以逗号分隔，例如 US"></label>
@@ -10,5 +10,17 @@
 <section class="panel"><div class="section-heading"><div><span class="eyebrow">03 / OPERATE</span><h2>流程、审批与运行记录</h2></div><button id="refresh" class="secondary">刷新</button></div><p class="muted">发布、启动、内容审批是三个独立动作。发起人与审批人必须不同。</p><div id="workflows"></div><h3>待审批内容</h3><div id="approvals"></div><h3>运行记录</h3><div id="runs"></div></section>
 <section class="panel"><span class="eyebrow">04 / BATCHES</span><h2>客户开发批次</h2><p class="muted">一次研究，逐客户独立审批与跟进。子任务共用原授权预算，不自动批量发送。</p><div id="batches" class="empty">登录后显示真实批次。</div></section>
 <section class="panel"><span class="eyebrow">05 / INBOX</span><h2>业务事件收件箱</h2><p class="muted">不匹配的回复保留核对，重检不会修改收件人或绕过安全校验。</p><div id="events" class="empty">登录后显示已接收的真实事件。</div></section>
+<section class="panel"><div class="section-heading"><div><span class="eyebrow">06 / OUTCOMES</span><h2>商业成果与证据账本</h2></div><button class="secondary" id="refresh-outcomes">更新账本</button></div>
+<p class="muted">Agent 任务完成不自动算商机。成果由人员登记、独立人员审核，审核仅代表人工检查，不代表真实回款或第三方证明。</p>
+<div id="outcome-summary" class="empty">登录后显示业务汇总。</div>
+<details><summary>登记业务成果（必须附真实证据）</summary><div class="form-grid">
+<label>运行 ID<input id="outcome-run" placeholder="选择并复制真实运行 ID"></label>
+<label>成果类型<select id="outcome-kind"><option value="buyer_replied">买家回复</option><option value="qualified_lead">合格商机</option><option value="rfq_received">收到 RFQ</option><option value="outreach_sent">已发送开发信</option><option value="quote_sent">已发送报价</option><option value="sample_requested">样品申请</option><option value="sample_feedback">样品反馈</option><option value="order_confirmed">订单确认</option></select></label>
+<label>证据类型<select id="outcome-evidence-kind"><option value="business_event">已消费业务事件</option><option value="provider_receipt">已完成动作回执</option><option value="external_record">外部 HTTPS 商业文档</option></select></label>
+<label>证据引用<input id="outcome-reference" placeholder="真实事件 ID / 动作节点 ID / HTTPS 文档 URL"></label>
+<label>订单金额（USD，只有订单填写）<input type="number" id="outcome-amount" min="0" step="0.01" placeholder="可不填写"></label>
+<label>证据说明<input id="outcome-note" placeholder="说明来源、身份和核验方式（至少 10 字）"></label>
+</div><button id="report-outcome">提交待审成果</button></details>
+<div id="outcome-claims" class="empty">还没有登记成果。</div></section>
 <section class="panel"><h2>能力接线状态</h2><div id="capabilities" class="empty">登录后显示实际配置。配置存在不等于已联调通过。</div></section>
 <p id="notice" role="status"></p></main><footer>授权预算用于控制派发，不保证外部模型账单硬封顶。敏感资料与访问令牌仅应保存在企业受控环境。</footer><script type="module" src="/app.js"></script></body></html>

@@ -41,3 +41,9 @@ API 默认绑定回环，不提供 CORS 或 cookie 身份。需要公网访问�
 The HMAC ingress authenticates the configured gateway, not the sender of an email. The gateway must verify provider authenticity and normalize actual inbound records. Never give the ingress secret to an LLM or include it in message content. Identical provider event IDs must be retried without editing content. Recipient matching is deliberately strict; aliases/forwarders require human review rather than automatic bypass.
 
 Batch selection is not message approval. Each recipient retains four-eyes content approval. All child runs share the already-approved original budget and deadline. Pausing/cancelling does not undo remote operations. A result-unknown operation pauses the batch for reconciliation. Restore-from-backup can replay work absent from the backup: reconcile with providers before restarting.
+
+## v0.3 成果证据与审核
+
+业务成果由人登记，不由模型在任务完成时自动生成。系统验证回执或已消费事件属于当前运行，并要求独立身份审核。`human_reviewed` **不是**第三方独立鉴定、订单法律效力证明、回款确认或财务对账。外部 HTTPS 证据链接只保存引用，不由后台自动抓取，以避免 SSRF；审核者需在企业可信环境中核对文档原件、客户身份和财务事实。
+
+统计按 `tenant` 隔离，避免同一类型、同一证据重复计数。管理数据库的人仍可修改记录并重算普通哈希，账本与档案不是不可篡改或公证系统。外部链接、邮件正文和验收档案可能含商业秘密，只向授权企业人员提供；不要把它们提交到公开仓库。订单金额按 USD 美分整数存储，声明为“人工审核订单标称金额”，不得向客户解释为实收收入。

@@ -1,6 +1,6 @@
 # Trade Workflow Compiler · 外贸业务流程编译器
 
-**v0.2.0 — 独立、自托管、默认不允许外部执行的业务编译核心。**
+**v0.3.0 — 独立、自托管、默认拒绝未授权外部动作的业务编译与成果证据核心。**
 
 把企业自然语言需求和明确提供的企业资料编译成有版本、有数据契约、有审批节点、可持久化执行的流程。复用 OpenMausBot 执行研究和起草任务；把邮件发送、报价提交、样品申请等商业动作交给受控业务网关。
 
@@ -21,6 +21,7 @@
 | 接入 | OpenMausBot 标准 stdio MCP 适配器、受控 HTTP Gateway 适配器 |
 | 界面 | 中文业务工作台：需求编译、流程预览、发布、启动、审批、运行及证据查看 |
 | 运维 | 独立角色令牌、审计链、拒收名单、健康检查、doctor、Docker 配置、CI 配置 |
+| **成果账本（v0.3）** | 人工登记真实证据指针、执行归属校验、去重、独立审核、分类统计、逐运行验收档案与 SHA-256 摘要；不将任务成功写成真实成交 |
 | 可选调度 | `integrations/temporal` 独立调度包；没有在本次环境完成 SDK 编译或真实服务联调 |
 
 三个业务闭环：
@@ -33,9 +34,15 @@
 
 **每个子运行仍只允许一个外发收件人。** v0.2 支持从一次研究结果创建逐客户独立运行，批次共用原授权预算；不把“批量发送后只处理第一条回复”伪装成完整客户管理。询盘到报价不会自动生成价格依据，必须向 `context.facts` 提供真实询盘、可用价格规则和企业承诺限制。
 
-## v0.2 新增能力与升级
+## v0.3 成果证据账本
 
-[客户开发批次](docs/batch-execution.md) · [业务事件回流](docs/event-ingress.md) · [旧版升级步骤](docs/upgrade-v0.2.md) · [实际验收记录](docs/verification.md)
+新增 `GET/POST /api/outcomes`、`GET /api/outcomes/summary`、`POST /api/outcomes/:id/decision`、`GET /api/runs/:id/dossier` 等接口。外发回执必须来自本运行已完成的受控动作，买家回复必须来自本运行已经消费的业务事件，订单记录需要人工提交实际商业文档的 HTTPS 指针。
+
+**所有商业成果初始都是 `pending`；只有不同角色的审核者核对后才显示 `human_reviewed`，并且这依然不等于已回款、已结算或第三方核验成功。** 同一证据引用不能为同一类型成果重复计数；验收档案包含运行记录、审批、已消费事件和成果清单，附内容 SHA-256 用于离线完整性对照，但不带可信时间戳或数字签名。详见 [成果账本](docs/outcome-ledger.md) 和 [v0.3 升级说明](docs/upgrade-v0.3.md)。
+
+## v0.2 已有能力与升级
+
+[客户开发批次](docs/batch-execution.md) · [业务事件回流](docs/event-ingress.md) · [旧版升级步骤](docs/upgrade-v0.2.md) · [v0.2 历史验收](docs/verification-v0.2.md)
 
 复用上一版三个流程，不另造 runtime。多客户研究完成后必须手动选择，所有外发仍逐条审批。真实 Worker、邮件渠道和供应商系统未在本次环境联调。
 
@@ -105,18 +112,18 @@ node scripts/test.mjs
 
 测试中包含明确标记的合成 fixture，只存在于 `test/`。生产入口没有模拟成功路径。测试通过不等于 OpenMausBot、邮箱或供应商已经接通。详细结果和未验证项见 [验收记录](docs/verification.md)。
 
-## 单独发布到 GitHub
+## GitHub 发布（用户已经创建远程空仓库）
 
-本次交付包括完整源码、可运行构建和本地 Git 历史；**远程仓库没有在开发环境内创建**。在你自己的电脑安装 Git 与 GitHub CLI，登录本人账号后运行：
+仓库地址：`https://github.com/magicy565-web/trade-workflow-compiler`。由用户创建的仓库为 **public**，不要把真实企业档案、客户回复、凭证或本地数据库加入 Git。
 
-```sh
-gh auth login
-node scripts/publish-github.mjs
+在已用 `gh auth login` 登录账号的 Windows PowerShell 中，解压本发布包后运行：
+
+```powershell
+npm.cmd run check
+node scripts/publish-github.mjs --existing
 ```
 
-脚本验证当前账号为 `magicy565-web`，测试通过后新建 **私有** 仓库 `magicy565-web/trade-workflow-compiler` 并推送。仓库已存在、权限不明确或检测到已有 remote 时会停止，不会覆盖和强推。
-
-只有明确要公开时才添加 `--public`。不要把 GitHub token 发送到聊天里。创建和推送仍依赖本机账号权限及网络；成功以脚本返回的真实仓库 URL 为准。
+该脚本会验证账号和远端存在性，**只接受空仓库**，执行非强推的 `git push -u origin main`，拒绝覆盖远端已有提交。如远端已经存在内容，需要人工检查和正常合并，不能用 `--force` 覆盖。发布成功后，以 GitHub 的实际 `main` 提交为准。
 
 ## 设计边界
 

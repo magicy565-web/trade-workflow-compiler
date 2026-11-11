@@ -37,7 +37,7 @@ async function refresh(){
  if(r.status==='BATCH_READY'&&['admin','operator'].includes(identity.role))c.append(button('选择客户并创建批次',()=>showBatchPreview(r.id,c),'secondary'));
  if(r.status==='NEEDS_RECONCILIATION'&&identity.role==='approver')c.append(reconciliationForm(r));c.append(jsonDetails('节点结果与证据',r));
  if(['admin','operator'].includes(identity.role)&&!['COMPLETED','CANCELLED','FAILED','REJECTED','TIMED_OUT','NEEDS_RECONCILIATION'].includes(r.status))c.append(button('停止后续调度',async()=>{await api(`/runs/${r.id}/cancel`,'POST');await refresh();},'secondary'));rr.append(c);}
- renderBatches(batches);renderEvents(events);
+ renderBatches(batches);renderEvents(events);await refreshOutcomes();
  const cc=$('capabilities');cc.replaceChildren();for(const c of caps)cc.append(el('p',`${c.enabled&&c.bound?'已配置（仍需 doctor 验证）':'未接通 / 执行阻断'} · ${c.id} · ${c.description}`));
 }
 $('refresh').onclick=()=>refresh().catch(e=>notice(e.message));
@@ -77,3 +77,29 @@ function reconciliationForm(run){
  const evidence=el('textarea');evidence.rows=2;evidence.placeholder='服务商回执、事件编号或核验记录（至少 10 字符）';
  d.append(receipt,evidence,button('确认真实回执并恢复后续流程',async()=>{const output=JSON.parse(receipt.value);if(!confirm('已独立核验此操作真实发生，且回执收件人与原审批一致？'))return;await api(`/runs/${run.id}/reconcile`,'POST',{output,providerEvidence:evidence.value});await refresh();}));return d;
 }
+
+async function refreshOutcomes(){
+ if(!token)return;
+ const [summary,claims]=await Promise.all([api('/outcomes/summary'),api('/outcomes')]);
+ const top=$('outcome-summary');top.replaceChildren();
+ top.append(el('strong',`实际运行 ${summary.executionCount} 次 · 待核验 ${summary.claimsPendingReview} 条 · 已拒绝 ${summary.claimsRejected} 条`));
+ top.append(el('p',`人工审核订单金额 $${((summary.humanReviewedOrderValueUsdMinor||0)/100).toFixed(2)} USD · 已记录 Worker 成本 $${(summary.reportedProviderCostMicros/1e6).toFixed(2)}`));
+ top.append(jsonDetails('所有审核类型及免责声明',{humanReviewedByKind:summary.humanReviewedByKind,disclaimer:summary.disclaimer,runsByStatus:summary.runsByStatus}));
+ const list=$('outcome-claims');list.replaceChildren();
+ if(!claims.length)list.append(el('p','还没有提交任何真实成果记录。','empty'));
+ for(const o of claims){const c=el('div',undefined,'card');c.append(el('strong',`${o.kind} · ${o.state}`),el('p',`${o.evidence.kind} · ${o.evidence.reference}`,'muted'),el('p',o.evidence.note));
+ c.append(el('small',`运行 ${o.runId} · 证据哈希 ${o.evidenceHash}`));
+ if(o.reviewNote)c.append(el('p',`审核记录：${o.reviewNote}`,'muted'));
+ if(o.state==='pending'&&identity.role==='approver'){
+  c.append(button('通过人工审核',async()=>{const note=prompt('请注明独立查看证据的情况、来源和核对结果（至少 10 字）：');if(note===null)return;await api(`/outcomes/${o.id}/decision`,'POST',{hash:o.evidenceHash,approved:true,note});await refreshOutcomes();}));
+  c.append(button('拒绝成果声明',async()=>{const note=prompt('请写出拒绝原因（至少 10 字）：');if(note===null)return;await api(`/outcomes/${o.id}/decision`,'POST',{hash:o.evidenceHash,approved:false,note});await refreshOutcomes();},'danger'));
+ }
+ c.append(button('导出该运行验收档案',async()=>{const dossier=await api(`/runs/${encodeURIComponent(o.runId)}/dossier`);const blob=new Blob([JSON.stringify(dossier,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`twc-dossier-${o.runId}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);},'secondary'));list.append(c);
+ }
+}
+$('refresh-outcomes').onclick=()=>refreshOutcomes().catch(e=>notice(e.message));
+$('report-outcome').onclick=async()=>{
+ const amount=$('outcome-amount').value.trim(),p={runId:$('outcome-run').value.trim(),kind:$('outcome-kind').value,evidence:{kind:$('outcome-evidence-kind').value,reference:$('outcome-reference').value.trim(),note:$('outcome-note').value.trim()},occurredAt:new Date().toISOString(),idempotencyKey:crypto.randomUUID()};
+ if(amount!==''){const dollars=Number(amount);if(!Number.isFinite(dollars)||dollars<0||!Number.isSafeInteger(Math.round(dollars*100)))throw Error('金额应为非负、两位小数以内的美元数');p.amountMinor=Math.round(dollars*100);p.currency='USD';}
+ try{await api('/outcomes','POST',p);notice('成果已提交，等待独立人工审核。');await refreshOutcomes();}catch(e){notice(e.message);}
+};

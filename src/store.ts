@@ -25,12 +25,12 @@ export class Store {
         const row = this.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get() as {
             value: string;
         };
-        if (!['1', '2'].includes(row.value)) {
+        if (!['1', '2', '3'].includes(row.value)) {
             this.db.close();
             fail('DB_VERSION', 'Unsupported database version');
         }
-        // Additive, transactional v1 -> v2 migration. Preserve all original run JSON.
-        this.transaction(() => {
+        // Additive migrations. Never lower schema_version when reopening newer databases.
+        if (row.value === '1') this.transaction(() => {
             this.db.exec(`
                 CREATE TABLE IF NOT EXISTS batches(tenant TEXT NOT NULL,id TEXT PRIMARY KEY,source_run TEXT NOT NULL,request_key TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(tenant,source_run),UNIQUE(tenant,request_key));
                 CREATE TABLE IF NOT EXISTS batch_members(tenant TEXT NOT NULL,batch_id TEXT NOT NULL,run_id TEXT NOT NULL,target_email TEXT NOT NULL,PRIMARY KEY(tenant,batch_id,target_email),UNIQUE(tenant,run_id));
@@ -39,6 +39,12 @@ export class Store {
                 CREATE INDEX IF NOT EXISTS event_routes_run ON event_routes(tenant,run_id,state);
                 INSERT OR IGNORE INTO event_routes(tenant,event_id,state,reason,run_id) SELECT tenant,id,CASE WHEN consumed_by IS NULL THEN 'unmatched' ELSE 'consumed' END,NULL,consumed_by FROM events;
                 UPDATE metadata SET value='2' WHERE key='schema_version';`);
+        });
+        if (row.value !== '3') this.transaction(() => {
+            this.db.exec(`
+                CREATE TABLE IF NOT EXISTS outcomes(tenant TEXT NOT NULL,id TEXT PRIMARY KEY,run_id TEXT NOT NULL,request_key TEXT NOT NULL,evidence_key TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(tenant,request_key),UNIQUE(tenant,evidence_key));
+                CREATE INDEX IF NOT EXISTS outcomes_by_run ON outcomes(tenant,run_id);
+                UPDATE metadata SET value='3' WHERE key='schema_version';`);
         });
     }
     close(): void { this.db.close(); }
