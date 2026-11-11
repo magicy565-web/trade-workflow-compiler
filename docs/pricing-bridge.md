@@ -81,3 +81,13 @@ npm run test:pricing
 PowerShell：先分别设置 `$env:TWC_PRICING_SOURCE` 和 `$env:TWC_PRICING_PYTHON`，再运行 `npm.cmd run test:pricing`。
 
 该命令启动真实的定价 FastAPI 服务、TWC Engine 和隔离 HTTP 记录网关，临时数据库只包含标记的合成测试报价；验证已批准但未定稿拒绝、原始投影一致、二次审批、发送前复核、撤回后零派发、等待状态不重发。没有凭证时直接报错，不伪装成通过或跳过。测试代码和定价仓库 tests/helpers.py 仅用于隔离验证，生产入口不加载它们。
+
+## 先预览，再启动流程
+
+配置好 quote.import 后，可先检查单份报价，不必先接通发送网关：
+
+```sh
+npm run preview:quote -- /path/to/request.json /path/to/capabilities.local.json default
+```
+
+第三个参数必须是实际 TWC 租户。请求文件使用完整 CompileInput，明确指定 `playbook: inquiry-quote` 和 `context.facts.pricingQuote`。本命令只执行导入校验，输出实际收件人、固定正文、原始对客报价及内容哈希，不创建运行、审批或发送授权，不调用邮件网关。它验证报价当下可用，不能代替完整流程的能力检查与独立审批。错误会非零退出且不输出成功预览。输出含客户商业信息，只保存在企业受控位置。

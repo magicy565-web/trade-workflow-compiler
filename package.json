@@ -18,6 +18,7 @@
     "compile": "node --env-file-if-exists=.env dist/cli.js compile",
     "export:schema": "node --env-file-if-exists=.env dist/cli.js schemas",
     "publish:github": "node scripts/publish-github.mjs",
+    "preview:quote": "node --env-file-if-exists=.env dist/cli.js quote-preview",
     "test:pricing": "node test/pricing-live.mjs"
   },
   "devDependencies": {

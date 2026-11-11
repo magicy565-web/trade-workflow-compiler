@@ -35,3 +35,7 @@
 本轮只更新工作台版本与接入说明文字，没有宣称浏览器交互验收。此前浏览器自动化因系统 socket 权限阻止；详见 v0.4 历史报告。GitHub Actions 不作为本次通过证据；前一轮远端任务没有实际执行步骤，本轮不重复手动触发。
 
 复现方法见 docs/pricing-bridge.md。历史记录：docs/verification-v0.4.md、docs/verification-v0.3.md。
+
+## 后续开发：只读报价预检
+
+新增 `npm run preview:quote -- <request.json> <registry.json> <tenant>`，在创建运行之前验证报价导入并预览固定邮件内容。输出明确标识无发送授权，不调用网关或创建审批。新增实际 CLI 子进程与 HTTP 服务测试，覆盖成功、撤回、租户不匹配、disabled 和密钥不泄露。最新全套 163 项通过，证据：reports/v0.5.0/preview-check.txt。

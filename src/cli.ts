@@ -2,8 +2,10 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { resolve } from 'node:path';
 import { defaultCapabilities, Registry } from './registry.js';
-import { contracts } from './contracts.js';
+import { contracts, compileInputSchema } from './contracts.js';
 import { workflowSchema } from './compiler/spec-schema.js';
+import { assertSchema } from './schema.js';
+import { hash } from './util.js';
 import { compile } from './compiler/compiler.js';
 import { loadConfig } from './config.js';
 import { PricingAdapter } from './adapters/pricing.js';
@@ -36,6 +38,23 @@ try {
         console.log(JSON.stringify(result, null, 2));
         process.exitCode = result.status === 'blocked' ? 2 : 0;
     }
+    else if (command === 'quote-preview') {
+        if (args.length !== 3)
+            throw Error('Usage: quote-preview <request.json> <capabilities.json> <workflow-tenant>');
+        const input = JSON.parse(readFileSync(resolve(args[0]!), 'utf8')) as CompileInput;
+        assertSchema(compileInputSchema, input, 'PREVIEW_INPUT');
+        if (input.playbook !== 'inquiry-quote') throw Error('Explicit inquiry-quote playbook required');
+        const registry = Registry.fromFile(resolve(args[1]!)), capability = registry.get('quote.import');
+        if (!capability?.enabled || capability.binding?.adapter !== 'pricing')
+            throw Error('Enable and configure the dedicated quote.import capability first');
+        const result = await new PricingAdapter().execute({ tenantId: args[2]!, runId: 'read-only-preview',
+            stepId: 'draft', idempotencyKey: hash(input), capability, input: input.context,
+            context: input.context, businessRequest: input.request, deadlineMs: 10000 });
+        if (result.status !== 'completed') throw Error('Quote preview did not complete');
+        console.log(JSON.stringify({ mode: 'read_only_preview', authorizedToSend: false,
+            notice: 'Preview only. Publish a workflow and obtain independent payload approval before sending; pricing will be checked again.',
+            payloadHash: hash(result.output), payload: result.output }, null, 2));
+    }
     else if (command === 'schemas') {
         mkdirSync('schemas', { recursive: true });
         writeFileSync('schemas/workflow-v1.schema.json', JSON.stringify({ $schema: 'https://json-schema.org/draft/2020-12/schema', ...workflowSchema }, null, 2) + '\n');
@@ -58,7 +77,7 @@ try {
             process.exitCode = 2;
     }
     else {
-        console.log('Commands: init | compile <request.json> [registry.json] | schemas | doctor');
+        console.log('Commands: init | quote-preview <request.json> <registry.json> <tenant> | compile <request.json> [registry.json] | schemas | doctor');
         process.exitCode = command ? 1 : 0;
     }
 }
