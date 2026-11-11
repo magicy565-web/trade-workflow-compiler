@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto';
 import type { Approval, BusinessEvent, Definition, Principal, Run, RunStatus, WorkflowSpec } from './types.js';
 import { canonical, fail, hash } from './util.js';
 import { EventInbox } from './events.js';
+import { Followups } from './followups.js';
 export const terminal = new Set<RunStatus>(['COMPLETED', 'REJECTED', 'TIMED_OUT', 'FAILED', 'CANCELLED', 'NEEDS_RECONCILIATION']);
 export class Store {
     readonly db: DatabaseSync;
@@ -25,7 +26,7 @@ export class Store {
         const row = this.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get() as {
             value: string;
         };
-        if (!['1', '2', '3'].includes(row.value)) {
+        if (!['1', '2', '3', '4'].includes(row.value)) {
             this.db.close();
             fail('DB_VERSION', 'Unsupported database version');
         }
@@ -40,11 +41,19 @@ export class Store {
                 INSERT OR IGNORE INTO event_routes(tenant,event_id,state,reason,run_id) SELECT tenant,id,CASE WHEN consumed_by IS NULL THEN 'unmatched' ELSE 'consumed' END,NULL,consumed_by FROM events;
                 UPDATE metadata SET value='2' WHERE key='schema_version';`);
         });
-        if (row.value !== '3') this.transaction(() => {
+        if (['1', '2'].includes(row.value)) this.transaction(() => {
             this.db.exec(`
                 CREATE TABLE IF NOT EXISTS outcomes(tenant TEXT NOT NULL,id TEXT PRIMARY KEY,run_id TEXT NOT NULL,request_key TEXT NOT NULL,evidence_key TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(tenant,request_key),UNIQUE(tenant,evidence_key));
                 CREATE INDEX IF NOT EXISTS outcomes_by_run ON outcomes(tenant,run_id);
                 UPDATE metadata SET value='3' WHERE key='schema_version';`);
+        });
+        if (row.value !== '4') this.transaction(() => {
+            this.db.exec(`
+                CREATE TABLE followups(tenant TEXT NOT NULL,id TEXT PRIMARY KEY,run_id TEXT NOT NULL,event_id TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(tenant,event_id));
+                CREATE INDEX followups_by_run ON followups(tenant,run_id);
+                CREATE TABLE followup_history(tenant TEXT NOT NULL,followup_id TEXT NOT NULL,version INTEGER NOT NULL,body TEXT NOT NULL,PRIMARY KEY(tenant,followup_id,version));`);
+            new Followups(this).backfillInside();
+            this.db.prepare("UPDATE metadata SET value='4' WHERE key='schema_version'").run();
         });
     }
     close(): void { this.db.close(); }
@@ -196,6 +205,11 @@ export class Store {
         return (this.db.prepare('SELECT body FROM approvals WHERE tenant=? ORDER BY rowid DESC LIMIT 500').all(tenant) as {
             body: string;
         }[]).map(r => JSON.parse(r.body) as Approval);
+    }
+    approvalsByRun(tenant: string, runId: string): Approval[] {
+        this.getRun(tenant, runId);
+        return (this.db.prepare('SELECT body FROM approvals WHERE tenant=? AND run_id=? ORDER BY rowid')
+            .all(tenant, runId) as { body: string }[]).map(r => JSON.parse(r.body) as Approval);
     }
     decideApproval(tenant: string, id: string, expectedHash: string, approved: boolean, actor: Principal, now = Date.now()): Approval {
         return this.transaction(() => {

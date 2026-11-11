@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "baselineLocalCommit": "0a90f7d",
+  "baselineRemoteCommit": "b91149faae787ada99e7b4a2209d3f411b67b4d9",
+  "syntheticBusinessFixture": true,
+  "createdBy": "Unmodified v0.3.0 compiled runtime",
+  "schemaFrom": 3,
+  "schemaTo": 4,
+  "runUnchanged": true,
+  "approvalsUnchanged": true,
+  "backfilledFollowups": 1,
+  "auditValid": true
+}

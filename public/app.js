@@ -37,7 +37,7 @@ async function refresh(){
  if(r.status==='BATCH_READY'&&['admin','operator'].includes(identity.role))c.append(button('选择客户并创建批次',()=>showBatchPreview(r.id,c),'secondary'));
  if(r.status==='NEEDS_RECONCILIATION'&&identity.role==='approver')c.append(reconciliationForm(r));c.append(jsonDetails('节点结果与证据',r));
  if(['admin','operator'].includes(identity.role)&&!['COMPLETED','CANCELLED','FAILED','REJECTED','TIMED_OUT','NEEDS_RECONCILIATION'].includes(r.status))c.append(button('停止后续调度',async()=>{await api(`/runs/${r.id}/cancel`,'POST');await refresh();},'secondary'));rr.append(c);}
- renderBatches(batches);renderEvents(events);await refreshOutcomes();
+ renderBatches(batches);renderEvents(events);await Promise.all([refreshOutcomes(),refreshFollowups()]);
  const cc=$('capabilities');cc.replaceChildren();for(const c of caps)cc.append(el('p',`${c.enabled&&c.bound?'已配置（仍需 doctor 验证）':'未接通 / 执行阻断'} · ${c.id} · ${c.description}`));
 }
 $('refresh').onclick=()=>refresh().catch(e=>notice(e.message));
@@ -103,3 +103,46 @@ $('report-outcome').onclick=async()=>{
  if(amount!==''){const dollars=Number(amount);if(!Number.isFinite(dollars)||dollars<0||!Number.isSafeInteger(Math.round(dollars*100)))throw Error('金额应为非负、两位小数以内的美元数');p.amountMinor=Math.round(dollars*100);p.currency='USD';}
  try{await api('/outcomes','POST',p);notice('成果已提交，等待独立人工审核。');await refreshOutcomes();}catch(e){notice(e.message);}
 };
+
+async function refreshFollowups(before,append=false){
+ if(!token)return;
+ const state=$('followup-filter').value;
+ const page=await api(`/followups?state=${state}${before?'&before='+before:''}`);
+ $('followup-summary').textContent=`待处理 ${page.summary.active} · 未领取 ${page.summary.unassigned} · 已逾期 ${page.summary.overdue}`;
+ const root=$('followups');if(!append)root.replaceChildren();root.querySelector('.load-more')?.remove();
+ if(!page.items.length&&!append)root.append(el('p',state==='active'?'没有待跟进的后续回复。':'没有符合条件的记录。','empty'));
+ const labels={open:'待领取',in_progress:'跟进中',resolved:'已处理',dismissed:'无需跟进'};
+ for(const f of page.items){
+  const c=el('article',undefined,'card');c.dataset.followupId=f.id;
+  const overdue=['open','in_progress'].includes(f.state)&&f.dueAt&&Date.parse(f.dueAt)<=Date.now();
+  c.append(el('strong',`${labels[f.state]}${overdue?' · 已逾期':''}`),el('p',`负责人：${f.ownerId??'尚未领取'} · 截止：${f.dueAt?new Date(f.dueAt).toLocaleString():'未安排'}`),el('p',`关联运行：${f.runId}`,'muted'));
+  if(f.nextAction)c.append(el('p',`下一步：${f.nextAction}`));
+  c.append(button('查看原始回复与处理记录',async()=>{
+   const [source,detail]=await Promise.all([api(`/events/${encodeURIComponent(f.eventId)}`),api(`/followups/${f.id}`)]);
+   c.querySelector('.followup-detail')?.remove();const d=el('div',undefined,'followup-detail');
+   d.append(jsonDetails('原始回复',source.event),jsonDetails('处理记录',detail.history));c.append(d);
+  },'secondary'));
+  if(['admin','operator'].includes(identity.role)&&(!f.ownerId||f.ownerId===identity.userId||identity.role==='admin')){
+   const active=['open','in_progress'].includes(f.state);
+   const note=el('textarea');note.rows=2;note.setAttribute('aria-label','跟进处理说明');note.placeholder='记录核对情况、处理结果或重新打开的原因（至少 10 字符）';
+   const change=async(action,extra={})=>{await api(`/followups/${f.id}`,'POST',{expectedVersion:f.version,action,note:note.value,...extra});await refreshFollowups();};
+   c.append(note);
+   if(active){
+    if(f.ownerId!==identity.userId)c.append(button(f.ownerId?'接手跟进':'领取跟进',()=>change('claim')));
+    if(f.ownerId){
+     const details=el('details');details.append(el('summary','安排下一步'));
+     const dueLabel=el('label','跟进期限'),due=el('input');due.type='datetime-local';dueLabel.append(due);
+     const actionLabel=el('label','下一步行动'),next=el('input');next.value=f.nextAction;actionLabel.append(next);
+     details.append(dueLabel,actionLabel,button('保存跟进安排',async()=>{
+      const date=new Date(due.value);if(!Number.isFinite(date.getTime()))throw Error('请选择跟进期限');
+      await change('schedule',{dueAt:date.toISOString(),nextAction:next.value});
+     }));c.append(details);
+     c.append(button('标记已处理',()=>change('resolve')),button('无需继续跟进',()=>change('dismiss'),'secondary'));
+    }
+   }else c.append(button('重新打开',()=>change('reopen'),'secondary'));
+  }
+  root.append(c);
+ }
+ if(page.nextCursor)root.append(button('加载更多跟进',()=>refreshFollowups(page.nextCursor,true),'secondary load-more'));
+}
+$('followup-filter').onchange=()=>refreshFollowups().catch(e=>notice(e.message));

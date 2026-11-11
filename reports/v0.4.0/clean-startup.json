@@ -1,0 +1,22 @@
+{
+  "initExit": 0,
+  "health": {
+    "status": "ok",
+    "service": "trade-workflow-compiler",
+    "version": "0.4.0",
+    "externalIntegrationsVerified": false
+  },
+  "enabledCapabilities": 0,
+  "followups": {
+    "items": [],
+    "nextCursor": null,
+    "summary": {
+      "active": 0,
+      "unassigned": 0,
+      "overdue": 0
+    }
+  },
+  "compileStatus": "blocked",
+  "externalActionsExecuted": false,
+  "credentialsIncluded": false
+}

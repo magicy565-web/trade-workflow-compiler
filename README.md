@@ -1,6 +1,6 @@
 # Trade Workflow Compiler · 外贸业务流程编译器
 
-**v0.3.0 — 独立、自托管、默认拒绝未授权外部动作的业务编译与成果证据核心。**
+**v0.4.0 — 独立、自托管、默认拒绝未授权外部动作的业务编译与成果证据核心。**
 
 把企业自然语言需求和明确提供的企业资料编译成有版本、有数据契约、有审批节点、可持久化执行的流程。复用 OpenMausBot 执行研究和起草任务；把邮件发送、报价提交、样品申请等商业动作交给受控业务网关。
 
@@ -22,7 +22,8 @@
 | 界面 | 中文业务工作台：需求编译、流程预览、发布、启动、审批、运行及证据查看 |
 | 运维 | 独立角色令牌、审计链、拒收名单、健康检查、doctor、Docker 配置、CI 配置 |
 | **成果账本（v0.3）** | 人工登记真实证据指针、执行归属校验、去重、独立审核、分类统计、逐运行验收档案与 SHA-256 摘要；不将任务成功写成真实成交 |
-| 可选调度 | `integrations/temporal` 独立调度包；没有在本次环境完成 SDK 编译或真实服务联调 |
+| 人工跟进（v0.4） | 关闭运行后的有效回复自动进入待办，领取、期限、逾期统计、处理记录、关闭/重开和历史追踪 |
+| 可选调度 | `integrations/temporal` SDK 构建通过；尚未完成真实 Temporal Server 联调 |
 
 三个业务闭环：
 
@@ -33,6 +34,12 @@
 ```
 
 **每个子运行仍只允许一个外发收件人。** v0.2 支持从一次研究结果创建逐客户独立运行，批次共用原授权预算；不把“批量发送后只处理第一条回复”伪装成完整客户管理。询盘到报价不会自动生成价格依据，必须向 `context.facts` 提供真实询盘、可用价格规则和企业承诺限制。
+
+## v0.4 后续回复跟进
+
+原流程处理完首条回复后，后续有效回复自动进入“待跟进回复”。操作员查看原文、领取、填写下一步与期限，处理后关闭；历史记录随运行验收档案导出。错误邮箱、未知关联和早于运行的事件不会成为客户待办。
+
+待办不会自动发信、修改审批或计为商机。管理员可以记录原因后接手其他操作员的待办。详见 [跟进队列](docs/followups.md)、[升级说明](docs/upgrade-v0.4.md) 和 [当前验收](docs/verification.md)。
 
 ## v0.3 成果证据账本
 
@@ -97,12 +104,12 @@ data/twc.sqlite              第一次启动服务时创建的业务状态库
 ## 开发和测试
 
 ```sh
-npm install --ignore-scripts
+npm ci --ignore-scripts
 npm run check
 npm run export:schema
 ```
 
-顶层仅开发依赖 TypeScript 5.8.3、@types/node 22.19.7。没有生成依赖 lockfile：本次环境不能连接 npm registry。核心预编译运行不需要安装依赖；不能据此声称整个开发供应链已锁定或经过依赖审计。
+顶层仅开发依赖 TypeScript 5.8.3、@types/node 22.19.7。本轮完成在线安装，核心与可选 Temporal 包均有 package-lock.json，CI 使用 npm ci。核心预编译运行仍不需要安装依赖；锁文件不代表依赖漏洞审计通过。
 
 单独验证已构建版本：
 
@@ -112,18 +119,11 @@ node scripts/test.mjs
 
 测试中包含明确标记的合成 fixture，只存在于 `test/`。生产入口没有模拟成功路径。测试通过不等于 OpenMausBot、邮箱或供应商已经接通。详细结果和未验证项见 [验收记录](docs/verification.md)。
 
-## GitHub 发布（用户已经创建远程空仓库）
+## GitHub 开发入口
 
-仓库地址：`https://github.com/magicy565-web/trade-workflow-compiler`。由用户创建的仓库为 **public**，不要把真实企业档案、客户回复、凭证或本地数据库加入 Git。
+[正式仓库](https://github.com/magicy565-web/trade-workflow-compiler) 已有 v0.3.0 基线；本轮 v0.4.0 通过独立分支和 PR 交付。仓库为 public，不要提交真实企业档案、客户回复、凭证或本地数据库。
 
-在已用 `gh auth login` 登录账号的 Windows PowerShell 中，解压本发布包后运行：
-
-```powershell
-npm.cmd run check
-node scripts/publish-github.mjs --existing
-```
-
-该脚本会验证账号和远端存在性，**只接受空仓库**，执行非强推的 `git push -u origin main`，拒绝覆盖远端已有提交。如远端已经存在内容，需要人工检查和正常合并，不能用 `--force` 覆盖。发布成功后，以 GitHub 的实际 `main` 提交为准。
+从仓库克隆后切换到需要验收的分支，开发使用 `npm ci --ignore-scripts`、`npm run check`。已有运行数据先按升级说明备份，不要重新 init。`scripts/publish-github.mjs --existing` 只用于首次导入空仓库，不能用于覆盖当前仓库。
 
 ## 设计边界
 
@@ -142,6 +142,7 @@ src/adapters/       OpenMausBot MCP / HTTP 网关
 src/store.ts        SQLite 状态、审批、迁移和审计
 src/batches.ts      单次研究拆分为逐客户运行与共享预算
 src/events.ts       回执归属、事件收件箱、HMAC 签名验证
+src/followups.ts    后续回复的人工待办、期限、责任人与处理记录
 src/api.ts          角色隔离 API
 public/             中文工作台
 config/             不含秘密、默认关闭的配置样例

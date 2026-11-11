@@ -88,14 +88,14 @@ test('schema v2 persists and migrates to v3 safely and never recreates or erases
  const dir=mkdtempSync(join(tmpdir(),'twc-outcome-db-')),path=join(dir,'twc.sqlite');
  try{
    const one=new Store(path);
-   one.db.exec("DROP TABLE outcomes; UPDATE metadata SET value='2' WHERE key='schema_version'");
+   one.db.exec("DROP TABLE followup_history; DROP TABLE followups; DROP TABLE outcomes; UPDATE metadata SET value='2' WHERE key='schema_version'");
    one.close();
    const two=new Store(path);
-   assert.equal(two.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get().value,'3');
+   assert.equal(two.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get().value,'4');
    assert.deepEqual(two.db.prepare('PRAGMA table_info(outcomes)').all().map(row=>row.name).filter(name=>name==='evidence_key'),['evidence_key']);
    two.close();
    const three=new Store(path);
-   assert.equal(three.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get().value,'3');
+   assert.equal(three.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get().value,'4');
    three.close();
  }finally{rmSync(dir,{recursive:true,force:true});}
 });
