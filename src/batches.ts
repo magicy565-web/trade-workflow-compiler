@@ -6,7 +6,7 @@ import { assertSchema } from './schema.js';
 import { contracts } from './contracts.js';
 import { edges, validateWorkflow } from './compiler/validator.js';
 import { fail, hash, record } from './util.js';
-import { normalizeEmail } from './events.js';
+import { EventInbox, normalizeEmail } from './events.js';
 export interface Batch {
     id: string;
     tenantId: string;
@@ -178,6 +178,7 @@ export class Batches {
                     r.nextWakeAt = null;
                     r.error = 'Batch cancelled; already dispatched remote operations are not undone';
                     this.store.putRun(r);
+                    new EventInbox(this.store).refreshRunInside(tenant, r.id);
                     this.store.audit(tenant, actor.userId, 'run.batch_cancelled', { runId: r.id, batchId: id, status: r.status });
                 }
             this.store.audit(tenant, actor.userId, 'batch.' + state, { batchId: id });
