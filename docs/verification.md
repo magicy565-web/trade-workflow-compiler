@@ -1,43 +1,41 @@
-# v0.4.0 开发与验证
+# v0.5.0 开发与验证
 
-日期：2026-11-11。基线为 GitHub `b91149faae787ada99e7b4a2209d3f411b67b4d9`；恢复的 v0.3.0 bundle 的 175 个文件与该提交逐项 SHA 校验一致。
+本版完成定价引擎到报价工作流的只读交接与发送前复核，基于 v0.4 人工待办。数据库仍为 schema 4。
 
-## 本轮交付
+## 已实现
 
-- 对已关闭运行的有效后续回复/样品事件建立持久化人工跟进队列，旧事件迁移补入。
-- 领取、负责人、期限、下一步、逾期统计、处理/无需跟进、重开及逐版本历史。
-- 企业隔离、责任人权限、版本冲突保护、事件/待办/历史/审计的原子提交。
-- 中文工作台入口及 dossier schema 2 的跟进历史导出。
-- 修复旧运行验收档案可能因最近 500 条全局审批列表截断而漏项的问题。
-- 核心与 Temporal 包的依赖锁文件，CI 改用 npm ci；Temporal SDK 现已在本地构建通过。
+- `quote.import` 只读取定价 viewer 身份和对客报价投影；强制显式租户映射、seller/customer/quote ID 一致、已定稿、未过期。
+- `PricedQuoteV1` 保留十进制字符串、币种和商业条款；固定渲染正文，不交由 Worker 改写价格。
+- 工作流发布、定价财务审批、实际发送审批分别保留；发送前重新获取并比较完整内容。
+- 发送网关必须声明最终定价复核能力，并回传匹配的报价哈希；派发前拒绝是 FAILED，派发后不确定结果是 NEEDS_RECONCILIATION。
+- 新回执可用于待审核 quote_sent 成果记录；新能力默认关闭、旧流程不自动换用定价接入。
+- 同时纳入 v0.4 审查修复：取消单任务/批次时，已到达未消费的有效回复进入人工待办，事务故障不会丢失回复。
 
-## 本地执行结果
-
-环境：Linux、Node.js 24.22.1、TypeScript 5.8.3；核心 @types/node 22.19.7。在线 npm 安装及 npm ci 成功。
+## 实际验证
 
 | 检查 | 结果 | 证据 |
 |---|---|---|
-| 类型检查、构建、单元/真实 HTTP 服务集成测试 | 138 项通过，0 失败、0 跳过 | reports/v0.4.0/check.txt |
-| 无 node_modules 分发目录 | 138 项通过 | reports/v0.4.0/clean-tests.txt |
-| 未修改的 v0.3 运行时创建数据库后升级 | schema 3→4；运行和审批不变；补入 1 条有效待办；审计有效 | reports/v0.4.0/v3-upgrade.json |
-| 默认空配置实际启动 | 健康版本 0.4.0、待办为空、全部能力关闭、编译 blocked | reports/v0.4.0/clean-startup.json |
-| 可选 Temporal SDK 构建 | npm ci 与 npm run build 成功 | reports/v0.4.0/temporal-build.txt |
-| 浏览器脚本语法 | node --check public/app.js 通过 | 本地命令 |
-| 浏览器点击/移动端布局 | 未通过验收；系统 Chromium 启动受环境 socket 权限限制 | reports/v0.4.0/browser.json |
+| TypeScript 类型检查、构建、全套测试 | 159 项通过，0 失败、0 跳过 | reports/v0.5.0/check.txt |
+| 定价协议专项 | 19 项：精度、身份/租户、失效、投影篡改、编译来源、撤回阻断、取消竞争、网关哈希与成果回执 | test/pricing.test.mjs |
+| 单任务/批次取消回归 | 2 项，包含重复取消及事务故障注入 | test/cancel-followups.test.mjs |
+| 实际跨仓库服务联调 | Python 定价 API + TWC Engine + HTTP 记录网关；全部断言通过 | reports/v0.5.0/pricing-live.json |
+| Schema 导出 | 新增 PricedQuoteV1，与源码构建一致 | schemas/PricedQuoteV1.schema.json |
+| 浏览器脚本语法 | node --check public/app.js 通过 | 本轮本机执行 |
 
-新增测试覆盖：重复回调与重检、错误邮箱/未知关联/过早事件、处理首条回复期间收到后续事件、样品反馈、领取与期限、关闭重开、跨企业与角色权限、责任人冲突、旧版本写入冲突、分页与全量统计、事务故障回滚、升级与重启，以及老任务完整审批导出。
+跨项目定价源码来自 `magicy565-web/trade-pricing-engine` 提交 `5870194415e4eef928a15cc5c26d4bb4ba26b542`，下载文件逐个对照 Git blob SHA。独立 Python venv 安装该提交的 requirements.txt：FastAPI 0.128.2、Pydantic 2.13.5、uvicorn 0.48.0。主测试使用 Node 24.22.1、TypeScript 5.8.3；Python 为 3.12.14。
 
-## 未完成的验证与边界
+联调使用实际定价 API，测试报价经过创建、计算、提交、财务审批和内部定稿；验证仅批准未定稿不能导入、发送需要独立 TWC 审批、原始对客投影一致、网关发送前复核、等待不重复派发，以及 TWC 审批后由定价 API 撤回导致零发送调用。测试网关只记录一次合成投递，真实邮件发送数为 0。临时数据库关闭后删除，生产入口无业务种子或测试成功回退。
 
-- 本地业务测试使用明确标记的合成 fixture，没有真实邮箱、OpenMausBot、供应商、客户订单或回款。
-- 跟进队列不自动外发、不通知期限、不重开原流程、不自动登记商业成果。
-- 浏览器点击/移动端、Windows、Docker、压力测试和真实 Temporal Server 尚未验收。
-- 基线 GitHub Actions 运行 42964100911 显示 failure/cancelled，steps 为空，日志返回 BlobNotFound；无法确定失败根因。本地通过不等于远端 CI 通过，新 PR 的 CI 结果应以 GitHub 页面为准。
-- 依赖锁文件用于可重复安装，不代表完成漏洞审计。
-- 跟进历史及事件哈希不构成第三方真实性认证；成果账本仍要求独立人审。
+## 验收边界
 
-升级操作与回滚边界见 [v0.4 升级说明](upgrade-v0.4.md)。旧版本报告仅是历史证据，不能用于证明新版浏览器或真实业务接线已经通过。
+没有实际客户报价或真实邮件账号参与本轮；没有接入生产邮件网关、实际 Worker 或 Temporal Server。HTTP health 的能力声明不能替代对网关实现的现场验收。定价复核与邮件提供方接收之间没有跨系统事务，不承诺原子撤回；严格保障需进一步扩展定价发送授权协议。
 
-## 后续审查修复：取消时保留待处理回复
+旧 Registry 不会自动新增能力。现有配置、企业名、收件人归属及远端租户映射需要部署者提供真实值。对账只确认提供方结果，不重发。
 
-单任务和批次取消现在在同一事务内刷新事件路由，把此前 ready、尚未消费且符合归属校验的回复移交人工待办。重复取消不重复建单，待办持久化失败会回滚取消与路由。新增两条回归场景（含事务故障注入），全套 140 项通过，见 reports/v0.4.0/cancellation-check.txt。
+本轮只更新工作台版本与接入说明文字，没有宣称浏览器交互验收。此前浏览器自动化因系统 socket 权限阻止；详见 v0.4 历史报告。GitHub Actions 不作为本次通过证据；前一轮远端任务没有实际执行步骤，本轮不重复手动触发。
+
+复现方法见 docs/pricing-bridge.md。历史记录：docs/verification-v0.4.md、docs/verification-v0.3.md。
+
+## 后续开发：只读报价预检
+
+新增 `npm run preview:quote -- <request.json> <registry.json> <tenant>`，在创建运行之前验证报价导入并预览固定邮件内容。输出明确标识无发送授权，不调用网关或创建审批。新增实际 CLI 子进程与 HTTP 服务测试，覆盖成功、撤回、租户不匹配、disabled 和密钥不泄露。最新全套 163 项通过，证据：reports/v0.5.0/preview-check.txt。

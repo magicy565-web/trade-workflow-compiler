@@ -21,7 +21,7 @@ export class HttpGatewayAdapter {
             if (!response.ok)
                 return { ready: false, detail: `Gateway health HTTP ${response.status}` };
             const data = await boundedJson(response);
-            const listed = record(data) && Array.isArray(data.capabilities) && data.capabilities.some(v => record(v) && v.id === c.id && v.version === c.version);
+            const listed = record(data) && Array.isArray(data.capabilities) && data.capabilities.some(v => record(v) && v.id === c.id && v.version === c.version && (c.id !== 'quote.send_priced' || v.pricingValidation === 'before_send'));
             const ready = !!listed && record(data) && data.status === 'ok' && (c.effect !== 'external' || data.idempotency === 'durable');
             return { ready, detail: ready ? 'Gateway responded and advertised the pinned capability. This does not verify business quality.' : 'Required capability or durable idempotency contract was not advertised' };
         }
@@ -44,6 +44,9 @@ export class HttpGatewayAdapter {
         const data = await boundedJson(response);
         if (!record(data) || data.idempotencyKey !== req.idempotencyKey || data.status !== 'completed' || !Object.hasOwn(data, 'output'))
             fail('GATEWAY_RECEIPT', 'Missing final receipt or mismatched idempotency key');
+        if (req.capability.id === 'quote.send_priced' &&
+            (!record(req.input) || !record(req.input.pricing) || data.pricingCustomerHash !== req.input.pricing.customerHash))
+            fail('PRICING_RECEIPT', 'Gateway did not confirm the exact pricing customer snapshot');
         return { status: 'completed', output: data.output, actualCostMicros: typeof data.actualCostMicros === 'number' ? data.actualCostMicros : undefined };
     }
 }

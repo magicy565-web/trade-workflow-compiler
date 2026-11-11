@@ -1,6 +1,6 @@
 {
   "name": "@qmtt/trade-workflow-compiler",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "description": "Local-first, fail-closed trade workflow compiler with durable approvals and an OpenMausBot adapter",
@@ -17,7 +17,9 @@
     "doctor": "node --env-file-if-exists=.env dist/cli.js doctor",
     "compile": "node --env-file-if-exists=.env dist/cli.js compile",
     "export:schema": "node --env-file-if-exists=.env dist/cli.js schemas",
-    "publish:github": "node scripts/publish-github.mjs"
+    "publish:github": "node scripts/publish-github.mjs",
+    "preview:quote": "node --env-file-if-exists=.env dist/cli.js quote-preview",
+    "test:pricing": "node test/pricing-live.mjs"
   },
   "devDependencies": {
     "@types/node": "22.19.7",

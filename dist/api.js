@@ -56,7 +56,7 @@ export function createApi(config, store, engine) {
         try {
             const url = new URL(req.url ?? '/', 'http://localhost'), path = url.pathname, method = req.method ?? 'GET';
             if (method === 'GET' && path === '/health') {
-                reply(res, 200, { status: 'ok', service: 'trade-workflow-compiler', version: '0.4.0', externalIntegrationsVerified: false });
+                reply(res, 200, { status: 'ok', service: 'trade-workflow-compiler', version: '0.5.0', externalIntegrationsVerified: false });
                 return;
             }
             if (method === 'GET' && assets.has(path)) {

@@ -1,0 +1,14 @@
+{
+  "test": "cross-repository pricing API + TWC Engine + HTTP recording gateway",
+  "pricingVersion": "0.2.0",
+  "finalizedImport": "passed",
+  "unfinalizedBlocked": "passed",
+  "independentApproval": "passed",
+  "exactPublicProjection": "passed",
+  "gatewayRevalidation": "passed",
+  "waitDoesNotResend": "passed",
+  "withdrawnAfterApprovalBlockedBeforeDispatch": "passed",
+  "recordedTestDeliveries": 1,
+  "realEmailsSent": 0,
+  "syntheticFixturesOnly": true
+}

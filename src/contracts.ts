@@ -5,8 +5,30 @@ export const evidenceSchema = obj({ url: { type: 'string', format: 'uri' }, capt
 const evidence = array(evidenceSchema, 1, 50);
 const candidate = obj({ companyName: str(1, 300), website: { type: 'string', format: 'uri' }, contactEmail: { type: 'string', format: 'email' }, evidence, rationale: str(1, 3000) }, ['companyName', 'website', 'evidence', 'rationale']);
 const mail = obj({ to: { type: 'string', format: 'email' }, subject: { ...str(1, 500), pattern: '^[^\\r\\n]+$' }, body: str(1, 20000), evidence, claimReview: { const: 'human_required' } });
+const decimal = { ...str(1, 80), pattern: '^(0|[1-9][0-9]*)(\\.[0-9]+)?$' };
+export const pricingReferenceSchema = obj({
+    quoteId: { ...str(1, 100), pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]*$' },
+    customer: str(1, 500), to: { type: 'string', format: 'email' }
+});
+export const pricingCustomerSchema = obj({
+    quote_number: str(1, 100), state: { const: 'issued' }, seller: str(1, 500), customer: str(1, 500),
+    description: str(1, 500), product_id: str(1, 100), product_revision: str(1, 100),
+    quantity: decimal, unit: { enum: ['piece', 'meter', 'kilogram', 'set', 'pair'] },
+    currency: { enum: ['USD', 'CNY', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'AED', 'KWD'] },
+    unit_price: decimal, total: decimal, incoterm: { enum: ['EXW', 'FCA', 'FOB', 'CIF', 'DAP'] },
+    named_place: str(1, 500), edition: { const: '2020' }, payment_terms: str(1, 500),
+    lead_time_days: int(1, 730), valid_until: { type: 'string', format: 'date-time' },
+    delivery_status: { const: 'NOT_SENT' }, note: str(1, 2000)
+});
+export const pricedQuoteSchema = obj({
+    to: { type: 'string', format: 'email' }, subject: { ...str(1, 500), pattern: '^[^\\r\\n]+$' }, body: str(1, 20000),
+    quote: pricingCustomerSchema,
+    pricing: obj({ provider: { const: 'trade-pricing-engine' }, quoteId: str(1, 100), customerHash: { ...str(64, 64), pattern: '^[a-f0-9]+$' } }),
+    claimReview: { const: 'human_required' }
+});
 export const contracts: Record<string, Schema> = {
     EnterpriseContextV1: contextSchema,
+    PricedQuoteV1: pricedQuoteSchema,
     MarketBriefV1: obj({ context: contextSchema, findings: array(str(1, 3000), 1, 30), evidence }),
     BuyerCandidatesV1: obj({ candidates: array(candidate, 0, 50), evidence }),
     QualifiedBuyersV1: obj({ buyers: array(candidate, 0, 50), exclusions: array(str(1, 1000), 0, 100), evidence }),

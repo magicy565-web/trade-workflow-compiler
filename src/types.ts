@@ -104,7 +104,9 @@ export interface CompileResult {
     workflow: WorkflowSpec | null;
 }
 export interface Binding {
-    adapter: 'openmausbot' | 'http';
+    adapter: 'openmausbot' | 'http' | 'pricing';
+    tenantId?: string;
+    pricingTenantId?: string;
     botId?: string;
     endpoint?: string;
     secretEnv?: string;
@@ -153,6 +155,7 @@ export type AdapterResult = {
 };
 export interface Adapter {
     execute(request: AdapterRequest): Promise<AdapterResult>;
+    validateForDispatch?(request: AdapterRequest, approvedPayload: unknown): Promise<void>;
     doctor?(capability: Capability): Promise<{
         ready: boolean;
         detail: string;

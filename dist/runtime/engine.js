@@ -205,11 +205,34 @@ export class Engine {
             if (buyerCount > 1)
                 return this.store.mutateRun(run.tenantId, run.id, r => { r.status = 'BATCH_READY'; r.nextWakeAt = Math.min(r.createdAt + r.spec.policy.maxRunSeconds * 1000, r.deadlineAt ?? Infinity); this.store.audit(r.tenantId, 'engine', 'run.batch_ready', { runId: r.id, count: buyerCount }); });
         }
+        if (node.capability === 'quote.send_priced') {
+            // These are read-only checks BEFORE the durable external-dispatch boundary.
+            // A refused/withdrawn quote is a known non-send, never an ambiguous provider result.
+            this.verifyApproval(run, node, input);
+            this.checkSuppression(run, input);
+            const source = run.spec.nodes.find(n => n.id === node.input);
+            const importer = source?.type === 'agent_task' && source.capability === 'quote.import'
+                ? this.registry.get(source.capability) : undefined;
+            const guard = importer?.binding?.adapter === 'pricing' ? this.adapters.pricing : undefined;
+            if (!importer || !source || !guard?.validateForDispatch)
+                fail('PRICING_GUARD', 'A dedicated pricing freshness guard is required');
+            await guard.validateForDispatch({ idempotencyKey: hash({ run: run.id, step: node.id, preflight: true }),
+                tenantId: run.tenantId, runId: run.id, stepId: source.id, capability: importer,
+                input: structuredClone(run.spec.context), context: structuredClone(run.spec.context),
+                businessRequest: run.spec.request, deadlineMs: 10000 }, input);
+            const health = await adapter.doctor?.(capability);
+            if (!health?.ready)
+                fail('GATEWAY_NOT_READY', 'Priced quote gateway must attest final pricing validation before dispatch');
+        }
         // This transaction is the durable dispatch boundary. Unknown external outcomes NEVER auto-retry.
         const prepared = this.store.transaction(() => {
             const r = this.store.getRun(run.tenantId, run.id);
             if (terminal.has(r.status))
                 return null;
+            if (this.now() >= Math.min(r.createdAt + r.spec.policy.maxRunSeconds * 1000, r.deadlineAt ?? Infinity)) {
+                this.finishInside(r, 'TIMED_OUT', 'Run deadline exceeded before dispatch');
+                return null;
+            }
             const old = r.steps[node.id];
             if (old?.status === 'running' && node.type === 'action') {
                 this.finishInside(r, 'NEEDS_RECONCILIATION', 'An external dispatch was interrupted; check provider receipt');
