@@ -1,6 +1,6 @@
 # Trade Workflow Compiler · 外贸业务流程编译器
 
-**v0.4.0 — 独立、自托管、默认拒绝未授权外部动作的业务编译与成果证据核心。**
+**v0.5.0 — 独立、自托管、默认拒绝未授权外部动作的业务编译与成果证据核心。**
 
 把企业自然语言需求和明确提供的企业资料编译成有版本、有数据契约、有审批节点、可持久化执行的流程。复用 OpenMausBot 执行研究和起草任务；把邮件发送、报价提交、样品申请等商业动作交给受控业务网关。
 
@@ -34,6 +34,12 @@
 ```
 
 **每个子运行仍只允许一个外发收件人。** v0.2 支持从一次研究结果创建逐客户独立运行，批次共用原授权预算；不把“批量发送后只处理第一条回复”伪装成完整客户管理。询盘到报价不会自动生成价格依据，必须向 `context.facts` 提供真实询盘、可用价格规则和企业承诺限制。
+
+## v0.5 定价引擎交接
+
+已对接独立的 [trade-pricing-engine v0.2.0](https://github.com/magicy565-web/trade-pricing-engine/tree/5870194415e4eef928a15cc5c26d4bb4ba26b542)。询盘报价流程可读取已审核、已定稿的对客报价，保留十进制金额与原始商业条款，生成固定正文并交独立审批。发送前重新读取报价；已撤回、过期、内容改变或来源不再有效时停止。
+
+新增 `quote.import` 和 `quote.send_priced`，默认关闭。已完成实际 Python API 与 TWC 运行时的跨进程联调，使用隔离合成报价与记录式测试网关；**尚未接通真实邮箱，也没有实际发信**。部署步骤与网关的最终复核责任见 [定价接入](docs/pricing-bridge.md) 和 [v0.5 升级说明](docs/upgrade-v0.5.md)。
 
 ## v0.4 后续回复跟进
 
@@ -121,7 +127,7 @@ node scripts/test.mjs
 
 ## GitHub 开发入口
 
-[正式仓库](https://github.com/magicy565-web/trade-workflow-compiler) 已有 v0.3.0 基线；本轮 v0.4.0 通过独立分支和 PR 交付。仓库为 public，不要提交真实企业档案、客户回复、凭证或本地数据库。
+[正式仓库](https://github.com/magicy565-web/trade-workflow-compiler) 已有 v0.3.0 基线；v0.4.0 与 v0.5.0 通过独立分支和依赖 PR 交付。仓库为 public，不要提交真实企业档案、客户回复、凭证或本地数据库。
 
 从仓库克隆后切换到需要验收的分支，开发使用 `npm ci --ignore-scripts`、`npm run check`。已有运行数据先按升级说明备份，不要重新 init。`scripts/publish-github.mjs --existing` 只用于首次导入空仓库，不能用于覆盖当前仓库。
 
@@ -138,7 +144,7 @@ node scripts/test.mjs
 ```text
 src/compiler/       模板、需求解析、WorkflowSpec、静态校验
 src/runtime/        状态解释执行器
-src/adapters/       OpenMausBot MCP / HTTP 网关
+src/adapters/       OpenMausBot MCP / HTTP 网关 / 定价引擎只读交接
 src/store.ts        SQLite 状态、审批、迁移和审计
 src/batches.ts      单次研究拆分为逐客户运行与共享预算
 src/events.ts       回执归属、事件收件箱、HMAC 签名验证

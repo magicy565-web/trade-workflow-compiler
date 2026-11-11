@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { assertSchema } from '../schema.js';
-import { compileInputSchema } from '../contracts.js';
+import { assertSchema, validate } from '../schema.js';
+import { compileInputSchema, pricingReferenceSchema } from '../contracts.js';
 import { buildPlaybook } from './playbooks.js';
 import { validateWorkflow } from './validator.js';
 export function extractIntent(input) {
@@ -33,6 +33,16 @@ export function compile(input, actor, registry) {
     const intent = extractIntent(input), errors = intent.missing.map(field => ({ code: 'MISSING_FACT', message: `Missing explicit enterprise fact: ${field}` }));
     if (!intent.playbook)
         return { status: 'blocked', intent, errors, warnings: [], workflow: null };
+    if (Object.hasOwn(input.context.facts, 'pricingQuote')) {
+        if (intent.playbook !== 'inquiry-quote')
+            errors.push({ code: 'PRICING_PLAYBOOK', message: 'A pricing quote requires the inquiry-quote playbook' });
+        errors.push(...validate(pricingReferenceSchema, input.context.facts.pricingQuote).map(message => ({ code: 'PRICING_REFERENCE', message })));
+        for (const id of ['quote.import', 'quote.send_priced'])
+            if (!registry.get(id))
+                errors.push({ code: 'UNKNOWN_CAPABILITY', message: `Add the dedicated ${id} capability to the registry` });
+        if (errors.length)
+            return { status: 'blocked', intent, errors, warnings: [], workflow: null };
+    }
     const workflow = buildPlaybook(intent.playbook, input.context, input.request, actor.tenantId, randomUUID(), registry);
     errors.push(...validateWorkflow(workflow, registry));
     return { status: errors.length ? 'blocked' : 'ready_for_approval', intent, errors, workflow,

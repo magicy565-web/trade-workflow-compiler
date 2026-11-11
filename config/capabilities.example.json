@@ -118,5 +118,25 @@
     "version": "1.0.0",
     "enabled": false,
     "maxCostMicros": 500000
+  },
+  {
+    "id": "quote.import",
+    "description": "读取定价引擎已定稿的对客报价",
+    "inputContract": "EnterpriseContextV1",
+    "outputContract": "PricedQuoteV1",
+    "effect": "read",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
+  },
+  {
+    "id": "quote.send_priced",
+    "description": "发送经双重核验及内容审批的定价报价",
+    "inputContract": "PricedQuoteV1",
+    "outputContract": "SendReceiptsV1",
+    "effect": "external",
+    "version": "1.0.0",
+    "enabled": false,
+    "maxCostMicros": 500000
   }
 ]

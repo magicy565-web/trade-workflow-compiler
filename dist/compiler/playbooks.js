@@ -28,10 +28,15 @@ export function buildPlaybook(id, context, request, tenantId, workflowId, regist
     }
     else if (id === 'inquiry-quote') {
         title = '询盘整理与报价';
-        task('normalize', 'inquiry.normalize', '$context', 'draft');
-        task('draft', 'quote.prepare', 'normalize', 'approve');
+        const priced = Object.hasOwn(context.facts, 'pricingQuote');
+        if (priced)
+            task('draft', 'quote.import', '$context', 'approve');
+        else {
+            task('normalize', 'inquiry.normalize', '$context', 'draft');
+            task('draft', 'quote.prepare', 'normalize', 'approve');
+        }
         gate('send', 'draft');
-        task('send', 'quote.send', 'draft', 'wait', 'approve');
+        task('send', priced ? 'quote.send_priced' : 'quote.send', 'draft', 'wait', 'approve');
         wait('send', 'buyer.reply_received', 'BuyerReplyV1', 'classify');
         task('classify', 'replies.classify', 'wait', 'END');
     }

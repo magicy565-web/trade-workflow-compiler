@@ -3,7 +3,7 @@ import type { Registry } from '../registry.js';
 import { hash } from '../util.js';
 import { validate } from '../schema.js';
 import { workflowSchema } from './spec-schema.js';
-import { contracts } from '../contracts.js';
+import { contracts, pricingReferenceSchema } from '../contracts.js';
 export function edges(n: WorkflowNode): string[] {
     if (n.type === 'human_approval')
         return [...new Set([n.next, n.onReject, n.onTimeout])];
@@ -108,6 +108,20 @@ export function validateWorkflow(value: unknown, registry: Registry, checkEnable
                 add('CAPABILITY_VERSION', 'Pinned capability version mismatch', n.id);
             if (n.inputContract !== c.inputContract || n.outputContract !== c.outputContract)
                 add('CONTRACT_TAMPER', 'Contracts must match capability registry', n.id);
+            if (c.outputContract === 'PricedQuoteV1' && c.id !== 'quote.import' ||
+                c.inputContract === 'PricedQuoteV1' && c.id !== 'quote.send_priced')
+                add('PRICING_PROVENANCE', 'Priced quotes require the dedicated import and dispatch capabilities', n.id);
+            if (c.id === 'quote.import') {
+                if (n.input !== '$context' || c.binding?.adapter !== 'pricing' || c.binding.tenantId !== spec.tenantId)
+                    add('PRICING_PROVENANCE', 'Quote import must read enterprise context with an explicit matching tenant binding', n.id);
+                for (const message of validate(pricingReferenceSchema, spec.context.facts.pricingQuote))
+                    add('PRICING_REFERENCE', message, n.id);
+            }
+            if (c.id === 'quote.send_priced') {
+                const source = nodes.get(n.input);
+                if (source?.type !== 'agent_task' || source.capability !== 'quote.import')
+                    add('PRICING_PROVENANCE', 'Priced delivery must consume the original pricing import directly', n.id);
+            }
             const inputType = dataContract(n.input, n.id);
             if (inputType && inputType !== c.inputContract)
                 add('CONTRACT_MISMATCH', `${inputType} cannot feed ${c.inputContract}`, n.id);

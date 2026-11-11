@@ -23,7 +23,7 @@ export const output = {
     'sample.summarize': { outcome: 'FIXTURE', nextAction: 'FIXTURE', evidence }
 };
 export const reply = { from: 'test@fixture.invalid', subject: 'FIXTURE', body: 'SYNTHETIC REPLY', messageId: 'fixture-message-1' };
-export function registry() { return new Registry(defaultCapabilities().map(c => ({ ...c, enabled: true, binding: { adapter: 'http', endpoint: 'http://127.0.0.1:1', secretEnv: 'TWC_TEST_GATEWAY_SECRET' } }))); }
+export function registry() { return new Registry(defaultCapabilities().filter(c => !['quote.import', 'quote.send_priced'].includes(c.id)).map(c => ({ ...c, enabled: true, binding: { adapter: 'http', endpoint: 'http://127.0.0.1:1', secretEnv: 'TWC_TEST_GATEWAY_SECRET' } }))); }
 export function request(playbook = 'buyer-development') { return { request: '我们主营服装面料，要开发美国中小品牌客户', context: structuredClone(context), playbook }; }
 export function definition(reg = registry(), playbook = 'buyer-development') { const result = compile(request(playbook), actor, reg); if (result.errors.length)
     throw Error(JSON.stringify(result.errors)); return result.workflow; }

@@ -50,8 +50,8 @@ export const outcomeInputSchema = obj({
     currency: { const: 'USD' }
 }, ['runId', 'idempotencyKey', 'kind', 'evidence', 'occurredAt']);
 
-const receiptCapabilities: Partial<Record<OutcomeKind, string>> = {
-    outreach_sent: 'outreach.send', quote_sent: 'quote.send', sample_requested: 'sample.request'
+const receiptCapabilities: Partial<Record<OutcomeKind, string[]>> = {
+    outreach_sent: ['outreach.send'], quote_sent: ['quote.send', 'quote.send_priced'], sample_requested: ['sample.request']
 };
 const externalKinds = new Set<OutcomeKind>([
     'order_confirmed', 'qualified_lead', 'rfq_received', 'buyer_replied', 'sample_feedback'
@@ -91,7 +91,7 @@ export class Outcomes {
             const capability = receiptCapabilities[kind];
             if (!capability)
                 fail('OUTCOME_EVIDENCE_TYPE', 'Only dispatch outcomes can cite provider receipts');
-            const node = run.spec.nodes.find(n => n.type === 'action' && n.capability === capability);
+            const node = run.spec.nodes.find(n => n.type === 'action' && capability.includes(n.capability) && n.id === evidence.reference);
             const step = node ? run.steps[node.id] : undefined;
             if (!step || step.status !== 'completed' || evidence.reference !== node!.id || !record(step.output))
                 fail('OUTCOME_RECEIPT', 'The referenced action was not completed in this run');

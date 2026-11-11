@@ -6,6 +6,7 @@ import { contracts } from './contracts.js';
 import { workflowSchema } from './compiler/spec-schema.js';
 import { compile } from './compiler/compiler.js';
 import { loadConfig } from './config.js';
+import { PricingAdapter } from './adapters/pricing.js';
 import { HttpGatewayAdapter } from './adapters/http.js';
 import { OpenMausBotAdapter } from './adapters/openmausbot.js';
 const [command, ...args] = process.argv.slice(2);
@@ -43,7 +44,7 @@ try {
         console.log('Wrote schema files');
     }
     else if (command === 'doctor') {
-        const config = loadConfig(), adapters = { http: new HttpGatewayAdapter(), openmausbot: new OpenMausBotAdapter() };
+        const config = loadConfig(), adapters = { pricing: new PricingAdapter(), http: new HttpGatewayAdapter(), openmausbot: new OpenMausBotAdapter() };
         const results = [];
         for (const c of config.registry.list()) {
             if (!c.enabled || !c.binding) {

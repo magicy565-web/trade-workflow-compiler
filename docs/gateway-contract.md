@@ -68,3 +68,7 @@ TWC 在有限 HTTP 超时内只接受明确 completed 回执；pending、非 JSO
 授权输入完全一致、秘密不落日志、错签名拒绝、重复同键返回同一回执、重复键不同内容拒绝、网关崩溃窗口不重复、真实退订阻断、实际费用返回、错误提供方响应不变成成功。
 
 本仓库的本地 HTTP fixture 测试覆盖客户端协议处理，不代表你的实际邮箱网关已经通过这些生产验收。
+
+## v0.5 定价报价发送
+
+`quote.send_priced` 使用 `PricedQuoteV1` 输入和 `SendReceiptsV1` 输出，另要求 health 声明 `pricingValidation: before_send` 及最终 envelope 的 `pricingCustomerHash`。网关须在实际发信前向定价引擎复核当前对客投影，原样发送批准内容；详细配置、哈希和并发边界见 [定价接入](pricing-bridge.md)。普通 quote.send 网关不会自动获得此能力。
