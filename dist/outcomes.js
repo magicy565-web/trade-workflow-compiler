@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { assertSchema, obj, str, int } from './schema.js';
 import { fail, hash, record } from './util.js';
+import { Followups } from './followups.js';
 const evidenceSchema = obj({
     kind: { enum: ['business_event', 'provider_receipt', 'external_record'] },
     reference: str(1, 2000), note: str(10, 3000)
@@ -191,10 +192,11 @@ export class Outcomes {
     dossier(tenant, runId) {
         const run = this.store.getRun(tenant, runId);
         const claims = this.byRun(tenant, runId);
-        const approvals = this.store.listApprovals(tenant).filter(a => a.runId === runId);
+        const approvals = this.store.approvalsByRun(tenant, runId);
         const consumedEvents = this.store.db.prepare('SELECT body FROM events WHERE tenant=? AND consumed_by=? ORDER BY received_at')
             .all(tenant, runId).map(r => JSON.parse(r.body));
-        const manifest = { schemaVersion: 1, run, approvals, consumedEvents,
+        const manifest = { schemaVersion: 2, run, approvals, consumedEvents,
+            followups: new Followups(this.store).byRun(tenant, runId),
             outcomeClaims: claims, auditChainValid: this.store.verifyAudit() };
         return { generatedAt: new Date().toISOString(), manifest,
             manifestSha256: hash(manifest), notes: 'Manifest SHA-256 is not a signature, trusted timestamp or third-party attestation.' };

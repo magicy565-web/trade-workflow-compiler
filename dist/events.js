@@ -2,6 +2,7 @@ import { createHmac } from 'node:crypto';
 import { contracts } from './contracts.js';
 import { assertSchema, obj, str } from './schema.js';
 import { constantEqual, fail, hash, record } from './util.js';
+import { Followups } from './followups.js';
 export const eventInputSchema = obj({ id: str(1, 200), type: { enum: ['buyer.reply_received', 'sample.update'] }, correlationId: str(1, 200), payload: {} });
 export function normalizeEmail(email) { return email.trim().toLowerCase(); }
 export function validateEvent(e) {
@@ -94,6 +95,8 @@ export class EventInbox {
             }
         }
         this.store.db.prepare('UPDATE event_routes SET state=?,reason=?,run_id=? WHERE tenant=? AND event_id=?').run(state, reason, runId, e.tenantId, e.id);
+        if (state === 'quarantined' && runId)
+            new Followups(this.store).ensureInside(e.tenantId, e.id);
         if (state !== current.state || runId !== current.runId)
             this.store.audit(e.tenantId, 'event-router', 'event.' + state, { eventId: e.id, runId, reason });
         // A wake must not steal a dispatch lease or overwrite in-flight runtime state.

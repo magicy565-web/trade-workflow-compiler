@@ -1,0 +1,16 @@
+{
+  "status": "blocked",
+  "automatedClickChecksPassed": 0,
+  "syntheticFixture": true,
+  "attempts": [
+    {
+      "browser": "runtime Playwright default",
+      "error": "Bundled browser executable not installed"
+    },
+    {
+      "browser": "/usr/bin/chromium",
+      "error": "process_singleton_posix.cc: socket() failed: Operation not permitted (1)"
+    }
+  ],
+  "mobileLayoutVerified": false
+}

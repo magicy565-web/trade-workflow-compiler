@@ -4,6 +4,7 @@ import { dirname } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { canonical, fail, hash } from './util.js';
 import { EventInbox } from './events.js';
+import { Followups } from './followups.js';
 export const terminal = new Set(['COMPLETED', 'REJECTED', 'TIMED_OUT', 'FAILED', 'CANCELLED', 'NEEDS_RECONCILIATION']);
 export class Store {
     db;
@@ -22,7 +23,7 @@ export class Store {
       CREATE TABLE IF NOT EXISTS audit(seq INTEGER PRIMARY KEY AUTOINCREMENT,tenant TEXT NOT NULL,at INTEGER NOT NULL,actor TEXT NOT NULL,event_type TEXT NOT NULL,payload TEXT NOT NULL,previous_hash TEXT NOT NULL,event_hash TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS suppression(tenant TEXT NOT NULL,email TEXT NOT NULL,reason TEXT NOT NULL,at INTEGER NOT NULL,PRIMARY KEY(tenant,email));`);
         const row = this.db.prepare("SELECT value FROM metadata WHERE key='schema_version'").get();
-        if (!['1', '2', '3'].includes(row.value)) {
+        if (!['1', '2', '3', '4'].includes(row.value)) {
             this.db.close();
             fail('DB_VERSION', 'Unsupported database version');
         }
@@ -38,12 +39,21 @@ export class Store {
                 INSERT OR IGNORE INTO event_routes(tenant,event_id,state,reason,run_id) SELECT tenant,id,CASE WHEN consumed_by IS NULL THEN 'unmatched' ELSE 'consumed' END,NULL,consumed_by FROM events;
                 UPDATE metadata SET value='2' WHERE key='schema_version';`);
             });
-        if (row.value !== '3')
+        if (['1', '2'].includes(row.value))
             this.transaction(() => {
                 this.db.exec(`
                 CREATE TABLE IF NOT EXISTS outcomes(tenant TEXT NOT NULL,id TEXT PRIMARY KEY,run_id TEXT NOT NULL,request_key TEXT NOT NULL,evidence_key TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(tenant,request_key),UNIQUE(tenant,evidence_key));
                 CREATE INDEX IF NOT EXISTS outcomes_by_run ON outcomes(tenant,run_id);
                 UPDATE metadata SET value='3' WHERE key='schema_version';`);
+            });
+        if (row.value !== '4')
+            this.transaction(() => {
+                this.db.exec(`
+                CREATE TABLE followups(tenant TEXT NOT NULL,id TEXT PRIMARY KEY,run_id TEXT NOT NULL,event_id TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(tenant,event_id));
+                CREATE INDEX followups_by_run ON followups(tenant,run_id);
+                CREATE TABLE followup_history(tenant TEXT NOT NULL,followup_id TEXT NOT NULL,version INTEGER NOT NULL,body TEXT NOT NULL,PRIMARY KEY(tenant,followup_id,version));`);
+                new Followups(this).backfillInside();
+                this.db.prepare("UPDATE metadata SET value='4' WHERE key='schema_version'").run();
             });
     }
     close() { this.db.close(); }
@@ -169,6 +179,11 @@ export class Store {
     createApproval(a) { this.db.prepare('INSERT INTO approvals VALUES(?,?,?,?,?)').run(a.tenantId, a.id, a.runId, a.nodeId, JSON.stringify(a)); }
     listApprovals(tenant) {
         return this.db.prepare('SELECT body FROM approvals WHERE tenant=? ORDER BY rowid DESC LIMIT 500').all(tenant).map(r => JSON.parse(r.body));
+    }
+    approvalsByRun(tenant, runId) {
+        this.getRun(tenant, runId);
+        return this.db.prepare('SELECT body FROM approvals WHERE tenant=? AND run_id=? ORDER BY rowid')
+            .all(tenant, runId).map(r => JSON.parse(r.body));
     }
     decideApproval(tenant, id, expectedHash, approved, actor, now = Date.now()) {
         return this.transaction(() => {

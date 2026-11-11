@@ -9,4 +9,5 @@ data/
 *.token
 *.log
 coverage/
+integrations/temporal/dist/
 .DS_Store

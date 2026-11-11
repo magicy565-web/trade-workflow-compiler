@@ -91,3 +91,15 @@ admin 不是万能业务审批角色。发布、动作审批、对账仍要求�
 创建批次不批准邮件内容。具体内容仍走原 `/api/approvals/:id/decision`。不确定结果仍走原 `/api/runs/:id/reconcile`，需要独立 approver 提供 `{output, providerEvidence}`。收到回执后会再次验证收件人与关联标识。
 
 `GET /api/runs` 仍是最近 500 个运行的视图，不能当成无限历史导出；批次详情列出该批次全部成员（最多 50）。完整运行保存在本地数据库。事件收件箱不使用这项 500 条运行视图限制。
+
+## v0.4 人工跟进接口
+
+| 接口 | 权限 | 行为 |
+|---|---|---|
+| `GET /api/followups?state=active&limit=50&before=cursor` | admin/operator/approver/viewer | state 可为 active/closed/all；最多 100 条；summary 统计整个企业活动待办 |
+| `GET /api/followups/:id` | admin/operator/approver/viewer | 当前记录与逐版本处理历史 |
+| `POST /api/followups/:id` | operator/admin | expectedVersion、action、note；schedule 另需 dueAt、nextAction |
+
+没有手工创建待办接口。待办只能由通过归属校验、关闭运行上的未消费事件生成。worker/ingest 不能操作跟进；管理员接手也留历史。未知记录/其他企业记录返回 404；角色/责任人不符 403；版本冲突/状态冲突 409；不合法字段 400。
+
+`GET /api/runs/:id/dossier` 的 manifest.schemaVersion 现为 2，增加 followups（含历史）；审批按本运行完整读取，不再受全局列表最近 500 条上限影响。

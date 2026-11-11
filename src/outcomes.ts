@@ -3,6 +3,7 @@ import type { Principal, Run } from './types.js';
 import type { Store } from './store.js';
 import { assertSchema, obj, str, int } from './schema.js';
 import { fail, hash, record } from './util.js';
+import { Followups } from './followups.js';
 
 /** All claims are human-reported. A reviewed claim is not independent confirmation of a sale. */
 export type OutcomeKind = 'outreach_sent' | 'buyer_replied' | 'qualified_lead' | 'rfq_received' |
@@ -219,10 +220,11 @@ export class Outcomes {
     dossier(tenant: string, runId: string): unknown {
         const run = this.store.getRun(tenant, runId);
         const claims = this.byRun(tenant, runId);
-        const approvals = this.store.listApprovals(tenant).filter(a => a.runId === runId);
+        const approvals = this.store.approvalsByRun(tenant, runId);
         const consumedEvents = (this.store.db.prepare('SELECT body FROM events WHERE tenant=? AND consumed_by=? ORDER BY received_at')
             .all(tenant, runId) as { body: string }[]).map(r => JSON.parse(r.body));
-        const manifest = { schemaVersion: 1, run, approvals, consumedEvents,
+        const manifest = { schemaVersion: 2, run, approvals, consumedEvents,
+            followups: new Followups(this.store).byRun(tenant, runId),
             outcomeClaims: claims, auditChainValid: this.store.verifyAudit() };
         return { generatedAt: new Date().toISOString(), manifest,
             manifestSha256: hash(manifest), notes: 'Manifest SHA-256 is not a signature, trusted timestamp or third-party attestation.' };

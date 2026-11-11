@@ -313,6 +313,8 @@ export class Engine {
             r.status = node?.type === 'action' && r.steps[node.id]?.status === 'running' ? 'NEEDS_RECONCILIATION' : 'CANCELLED';
             r.error = 'Local scheduling stopped; this does not undo or cancel an already dispatched remote operation';
             r.nextWakeAt = null;
+            this.store.putRun(r);
+            new EventInbox(this.store).refreshRunInside(tenant, id);
             this.store.audit(tenant, actor.userId, 'run.cancel_requested', { runId: id, status: r.status });
         });
     }

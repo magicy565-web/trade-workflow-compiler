@@ -53,3 +53,7 @@ node --env-file-if-exists=.env scripts/send-event.mjs https://YOUR-HOST/api/webh
 ## 核验边界
 
 已做本地 HTTP 签名、篡改、过期、重复、冲突、归属隔离、提前事件和重启测试；远端邮件/样品渠道尚未接入。实现采用 Node.js 的 `createHmac` / `timingSafeEqual`，参考官方文档：<https://nodejs.org/api/crypto.html>。SQLite 使用参考：<https://nodejs.org/api/sqlite.html>。
+
+## v0.4 人工跟进
+
+运行已结束，但关联回执、收件人及时间校验均通过的后续事件，在保留 `quarantined` 状态的同时生成唯一人工待办。领取或处理待办不将事件标记为 `consumed`，不重新启动原运行，也不让该事件绕过成果账本的证据规则。详见 [跟进队列](followups.md)。

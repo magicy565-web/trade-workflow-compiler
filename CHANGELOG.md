@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0 — 2026-11-11
+
+- Route valid later replies and sample updates on closed runs into a durable human follow-up queue; preserve source event quarantine and original execution.
+- Add claim, deadline/next-action scheduling, overdue totals, resolution/dismissal and reopening, with tenant isolation, ownership and optimistic versions.
+- Record every change in transactional history/audit; backfill eligible schema-3 events during schema-4 migration.
+- Add Chinese workbench follow-up controls and include handling history in dossier schema 2.
+- Fix missing historical approvals in old-run dossiers when newer approvals exceed 500.
+- Add core/Temporal dependency lockfiles and use npm ci in CI; Temporal SDK build now verified locally.
+- No automatic follow-up sending, reminders, commercial outcome credit or real provider connection added.
+
 ## 0.3.0 — 2026-11-11
 
 - Add evidence-backed outcome ledger with strict tenant/run ownership and independent review.

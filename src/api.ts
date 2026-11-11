@@ -15,6 +15,7 @@ import { DomainError, fail, hash } from './util.js';
 import { Batches } from './batches.js';
 import { EventInbox, eventInputSchema, verifyWebhook } from './events.js';
 import { Outcomes, outcomeInputSchema, type OutcomeInput } from './outcomes.js';
+import { Followups, followupUpdateSchema, type FollowupUpdate, type FollowupFilter } from './followups.js';
 import type { BusinessEvent } from './types.js';
 import type { CompileInput, Principal, Role, WorkflowSpec, Obj } from './types.js';
 const staticFiles: Record<string, [
@@ -51,7 +52,7 @@ function permit(actor: Principal, ...roles: Role[]): void {
 }
 function reply(res: ServerResponse, status: number, value: unknown): void { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(value)); }
 export function createApi(config: Config, store: Store, engine: Engine) {
-    const batches = new Batches(store), inbox = new EventInbox(store), outcomes = new Outcomes(store);
+    const batches = new Batches(store), inbox = new EventInbox(store), outcomes = new Outcomes(store), followups = new Followups(store);
     return createServer(async (req, res) => {
         const requestId = randomUUID();
         res.setHeader('x-request-id', requestId);
@@ -62,7 +63,7 @@ export function createApi(config: Config, store: Store, engine: Engine) {
         try {
             const url = new URL(req.url ?? '/', 'http://localhost'), path = url.pathname, method = req.method ?? 'GET';
             if (method === 'GET' && path === '/health') {
-                reply(res, 200, { status: 'ok', service: 'trade-workflow-compiler', version: '0.3.0', externalIntegrationsVerified: false });
+                reply(res, 200, { status: 'ok', service: 'trade-workflow-compiler', version: '0.4.0', externalIntegrationsVerified: false });
                 return;
             }
             if (method === 'GET' && assets.has(path)) {
@@ -183,6 +184,27 @@ export function createApi(config: Config, store: Store, engine: Engine) {
                 return;
             }
             let match: RegExpMatchArray | null;
+            if (method === 'GET' && path === '/api/followups') {
+                permit(actor, 'admin', 'operator', 'approver', 'viewer');
+                reply(res, 200, { ...followups.list(tenant, (url.searchParams.get('state') ?? 'active') as FollowupFilter,
+                    url.searchParams.has('before') ? Number(url.searchParams.get('before')) : undefined,
+                    Number(url.searchParams.get('limit') ?? 50)), summary: followups.summary(tenant) });
+                return;
+            }
+            if ((match = path.match(/^\/api\/followups\/([^/]+)$/))) {
+                if (method === 'GET') {
+                    permit(actor, 'admin', 'operator', 'approver', 'viewer');
+                    reply(res, 200, { ...followups.get(tenant, match[1]!), history: followups.history(tenant, match[1]!) });
+                    return;
+                }
+                if (method === 'POST') {
+                    permit(actor, 'admin', 'operator');
+                    const input = await body(req);
+                    assertSchema(followupUpdateSchema, input, 'FOLLOWUP_SCHEMA');
+                    reply(res, 200, followups.update(tenant, match[1]!, input as FollowupUpdate, actor));
+                    return;
+                }
+            }
             if ((match = path.match(/^\/api\/outcomes\/([^/]+)(?:\/(decision))?$/))) {
                 if (method === 'GET' && !match[2]) {
                     permit(actor, 'admin', 'operator', 'approver', 'viewer');

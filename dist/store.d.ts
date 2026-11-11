@@ -24,6 +24,7 @@ export declare class Store {
     approvalFor(tenant: string, runId: string, nodeId: string): Approval | undefined;
     createApproval(a: Approval): void;
     listApprovals(tenant: string): Approval[];
+    approvalsByRun(tenant: string, runId: string): Approval[];
     decideApproval(tenant: string, id: string, expectedHash: string, approved: boolean, actor: Principal, now?: number): Approval;
     ingest(e: BusinessEvent, actor: Principal): {
         duplicate: boolean;
